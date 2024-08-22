@@ -11,6 +11,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     private func checkStatus() {
+
         CXCallDirectoryManager.sharedInstance
             .getEnabledStatusForExtension(withIdentifier: AppDelegate.extensionIdentifier,
                                           completionHandler: {(enabledStatus, error)  -> Void in

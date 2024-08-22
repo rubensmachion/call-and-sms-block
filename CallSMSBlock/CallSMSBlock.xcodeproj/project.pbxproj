@@ -17,6 +17,8 @@
 		771B18502C76A16C00AB9936 /* CallDirectoryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771B184F2C76A16C00AB9936 /* CallDirectoryHandler.swift */; };
 		771B18542C76A16C00AB9936 /* CallDirectory.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 771B184D2C76A16C00AB9936 /* CallDirectory.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		771B185A2C76A4FC00AB9936 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771B18592C76A4FC00AB9936 /* AppDelegate.swift */; };
+		771B18692C77D3E200AB9936 /* MessageFilterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771B18682C77D3E200AB9936 /* MessageFilterExtension.swift */; };
+		771B186D2C77D3E200AB9936 /* MessageFilter.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 771B18662C77D3E200AB9936 /* MessageFilter.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +43,13 @@
 			remoteGlobalIDString = 771B184C2C76A16C00AB9936;
 			remoteInfo = CallDirectory;
 		};
+		771B186B2C77D3E200AB9936 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 771B18142C76A0A700AB9936 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 771B18652C77D3E200AB9936;
+			remoteInfo = MessageFilter;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,6 +59,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				771B186D2C77D3E200AB9936 /* MessageFilter.appex in Embed Foundation Extensions */,
 				771B18542C76A16C00AB9936 /* CallDirectory.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -73,6 +83,9 @@
 		771B18512C76A16C00AB9936 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		771B18592C76A4FC00AB9936 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		771B185B2C76ADC600AB9936 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		771B18662C77D3E200AB9936 /* MessageFilter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MessageFilter.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		771B18682C77D3E200AB9936 /* MessageFilterExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFilterExtension.swift; sourceTree = "<group>"; };
+		771B186A2C77D3E200AB9936 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +117,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		771B18632C77D3E200AB9936 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -114,6 +134,7 @@
 				771B182F2C76A0A800AB9936 /* CallSMSBlockTests */,
 				771B18392C76A0A800AB9936 /* CallSMSBlockUITests */,
 				771B184E2C76A16C00AB9936 /* CallDirectory */,
+				771B18672C77D3E200AB9936 /* MessageFilter */,
 				771B181D2C76A0A700AB9936 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -125,6 +146,7 @@
 				771B182C2C76A0A800AB9936 /* CallSMSBlockTests.xctest */,
 				771B18362C76A0A800AB9936 /* CallSMSBlockUITests.xctest */,
 				771B184D2C76A16C00AB9936 /* CallDirectory.appex */,
+				771B18662C77D3E200AB9936 /* MessageFilter.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,6 +198,15 @@
 			path = CallDirectory;
 			sourceTree = "<group>";
 		};
+		771B18672C77D3E200AB9936 /* MessageFilter */ = {
+			isa = PBXGroup;
+			children = (
+				771B18682C77D3E200AB9936 /* MessageFilterExtension.swift */,
+				771B186A2C77D3E200AB9936 /* Info.plist */,
+			);
+			path = MessageFilter;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -192,6 +223,7 @@
 			);
 			dependencies = (
 				771B18532C76A16C00AB9936 /* PBXTargetDependency */,
+				771B186C2C77D3E200AB9936 /* PBXTargetDependency */,
 			);
 			name = CallSMSBlock;
 			productName = CallSMSBlock;
@@ -251,6 +283,23 @@
 			productReference = 771B184D2C76A16C00AB9936 /* CallDirectory.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		771B18652C77D3E200AB9936 /* MessageFilter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 771B18702C77D3E200AB9936 /* Build configuration list for PBXNativeTarget "MessageFilter" */;
+			buildPhases = (
+				771B18622C77D3E200AB9936 /* Sources */,
+				771B18632C77D3E200AB9936 /* Frameworks */,
+				771B18642C77D3E200AB9936 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MessageFilter;
+			productName = MessageFilter;
+			productReference = 771B18662C77D3E200AB9936 /* MessageFilter.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -275,6 +324,9 @@
 					771B184C2C76A16C00AB9936 = {
 						CreatedOnToolsVersion = 15.2;
 					};
+					771B18652C77D3E200AB9936 = {
+						CreatedOnToolsVersion = 15.2;
+					};
 				};
 			};
 			buildConfigurationList = 771B18172C76A0A700AB9936 /* Build configuration list for PBXProject "CallSMSBlock" */;
@@ -294,6 +346,7 @@
 				771B182B2C76A0A800AB9936 /* CallSMSBlockTests */,
 				771B18352C76A0A800AB9936 /* CallSMSBlockUITests */,
 				771B184C2C76A16C00AB9936 /* CallDirectory */,
+				771B18652C77D3E200AB9936 /* MessageFilter */,
 			);
 		};
 /* End PBXProject section */
@@ -323,6 +376,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		771B184B2C76A16C00AB9936 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		771B18642C77D3E200AB9936 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -367,6 +427,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		771B18622C77D3E200AB9936 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				771B18692C77D3E200AB9936 /* MessageFilterExtension.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -384,6 +452,11 @@
 			isa = PBXTargetDependency;
 			target = 771B184C2C76A16C00AB9936 /* CallDirectory */;
 			targetProxy = 771B18522C76A16C00AB9936 /* PBXContainerItemProxy */;
+		};
+		771B186C2C77D3E200AB9936 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 771B18652C77D3E200AB9936 /* MessageFilter */;
+			targetProxy = 771B186B2C77D3E200AB9936 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -707,6 +780,58 @@
 			};
 			name = Release;
 		};
+		771B186E2C77D3E200AB9936 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NT29W92MQ3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MessageFilter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MessageFilter;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.test.call.block.CallSMSBlock.MessageFilter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		771B186F2C77D3E200AB9936 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NT29W92MQ3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MessageFilter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MessageFilter;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.test.call.block.CallSMSBlock.MessageFilter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -751,6 +876,15 @@
 			buildConfigurations = (
 				771B18562C76A16C00AB9936 /* Debug */,
 				771B18572C76A16C00AB9936 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		771B18702C77D3E200AB9936 /* Build configuration list for PBXNativeTarget "MessageFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				771B186E2C77D3E200AB9936 /* Debug */,
+				771B186F2C77D3E200AB9936 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
