@@ -7,7 +7,7 @@ struct CallSMSBlockApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppCoordinatorView()
         }
     }
 }

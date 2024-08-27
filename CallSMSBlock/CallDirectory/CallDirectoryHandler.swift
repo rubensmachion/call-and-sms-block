@@ -3,22 +3,35 @@ import CallKit
 
 class CallDirectoryHandler: CXCallDirectoryProvider {
 
+    private let dataStore = DataStore()
+
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
         context.delegate = self
 
-        addAllBlockingPhoneNumbers(to: context)
-
-        context.completeRequest()
+        addAllBlockingPhoneNumbers(to: context) {
+            context.completeRequest()
+        }
     }
 
-    private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext) {
-        // Retrieve all phone numbers to block from data store. For optimal performance and memory usage when there are many phone numbers,
-        // consider only loading a subset of numbers at a given time and using autorelease pool(s) to release objects allocated during each batch of numbers which are loaded.
-        //
-        // Numbers must be provided in numerically ascending order.
-        let allPhoneNumbers: [CXCallDirectoryPhoneNumber] = [ 1_408_555_5555, 1_800_555_5555, 55_11_98115_9541 ]
-        for phoneNumber in allPhoneNumbers {
-            context.addBlockingEntry(withNextSequentialPhoneNumber: phoneNumber)
+    private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext, 
+                                            completion: @escaping () -> Void) {
+        Task {
+            let result: [BlockNumberData] = try await dataStore.fetch(predicate: BlockNumberData.unblockedNumberPredicate())
+            guard !result.isEmpty else {
+                completion()
+                return
+            }
+
+            for index in 0..<result.count {
+                context.addBlockingEntry(withNextSequentialPhoneNumber: result[index].number)
+                result[index].isBlocked.toggle()
+            }
+            do {
+                try dataStore.save()
+            } catch {
+                print("Failed save \(error)")
+            }
+            completion()
         }
     }
 }
