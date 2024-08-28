@@ -4,8 +4,8 @@ import CoreData
 
 protocol HomeViewModelProtocol: ObservableObject {
     var isLoading: Bool { get }
-    var searchResults: [HomeViewListModel] { get }
-    var listaData: [HomeViewListModel] { get }
+    var searchResults: [BlockNumberData] { get }
+    var listaData: [BlockNumberData] { get }
 
     func reloadData(filter text: String?)
 
@@ -17,13 +17,12 @@ final class HomeViewModel: HomeViewModelProtocol {
 
     // MARK: - Properties
     private let appCoordinator: AppCoordinator
-    private let manager = BlockNumberDatabaseManager.shared
     private let dataStore = DataStore()
 
     @Published var isLoading = false
-    @Published var searchResults: [HomeViewListModel] = []
+    @Published var searchResults: [BlockNumberData] = []
 
-    var listaData: [HomeViewListModel] = []
+    var listaData: [BlockNumberData] = []
 
     // MARK: - Init
     init(appCoordinator: AppCoordinator) {
@@ -39,12 +38,12 @@ final class HomeViewModel: HomeViewModelProtocol {
                 let result: [BlockNumberData]? = try await dataStore.fetch(sortDescriptors: BlockNumberData.ascendingdateSortDescriptor())
                 listaData = result?.filter {
                     !$0.shouldUnlock
-                }.compactMap {
+                }/*.compactMap {
                     .init(id: $0.id ?? "",
                           number: $0.number,
                           name: $0.name,
                           formattedNumber: $0.number.toFormattedPhoneNumber() ?? "-")
-                } ?? []
+                }*/ ?? []
                 await MainActor.run {
                     self.filter(text: text ?? "")
                     self.isLoading = false
@@ -60,6 +59,7 @@ final class HomeViewModel: HomeViewModelProtocol {
     }
 
     func showEditPhoneNumber() {
+        // TODO: Handle edit information
 //        appCoordinator.push(.phoneNumberDetail(phoneNumber: PhoneNumberModel(id: "teste", name: "Teste")))
     }
 
@@ -69,7 +69,7 @@ final class HomeViewModel: HomeViewModelProtocol {
             searchResults = listaData
         } else {
             searchResults = listaData.filter {
-                $0.formattedNumber.contains(text)
+                $0.number.toFormattedPhoneNumber()?.lowercased().contains(text.lowercased()) ?? false
             }
         }
     }

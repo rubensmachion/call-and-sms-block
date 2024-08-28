@@ -2,9 +2,9 @@ import SwiftUI
 
 struct HomeViewCell: View {
     
-    private let item: HomeViewListModel
+    private let item: BlockNumberData
 
-    init(item: HomeViewListModel) {
+    init(item: BlockNumberData) {
         self.item = item
     }
 
@@ -16,7 +16,7 @@ struct HomeViewCell: View {
                     Text(name)
                         .font(.headline)
                 }
-                Text(item.formattedNumber)
+                Text(item.number.toFormattedPhoneNumber() ?? "-")
                     .font(.body)
                 Text("Spam")
                     .font(.body)
@@ -25,11 +25,4 @@ struct HomeViewCell: View {
             Image(systemName: "chevron.right")
         }
     }
-}
-
-#Preview {
-    HomeViewCell(item: .init(id: UUID().uuidString,
-                             number: 16991426807,
-                             name: "Teste 1",
-                             formattedNumber: "(16) 99142-6807"))
 }

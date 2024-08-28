@@ -26,12 +26,9 @@ class UnwantedCommunicationReportingExtension: ILClassificationUIExtensionViewCo
                 return
             }
             let formatted = phoneNumberUtility.format(phone, toType: .international)
-            numberLabel?.text = "Number: \(formatted)"
-
+            numberLabel?.text = "Sample Number: \(formatted)"
         } else if let message = classificationRequest as? ILMessageClassificationRequest {
-
-        } else {
-            print("None")
+            // TODO: Handle SMS message reporting
         }
     }
     
@@ -39,18 +36,7 @@ class UnwantedCommunicationReportingExtension: ILClassificationUIExtensionViewCo
     override func classificationResponse(for request:ILClassificationRequest) -> ILClassificationResponse {
         
         if request is ILCallClassificationRequest {
-            do {
-                let data = BlockNumberData(context: dataStore.persistentContainer.viewContext)
-                data.id = UUID().uuidString
-                data.name = "Blocked via Report"
-                data.date = .init()
-                data.isBlocked = false
-                data.shouldUnlock = false
-                data.number = Int64(phone?.numberString ?? "0") ?? 0
-
-            } catch {
-                print(error.localizedDescription)
-            }
+            // TODO: Call API to register this number
 
             return ILClassificationResponse(action: .reportJunk)
         } else {

@@ -9,7 +9,6 @@ extension Bundle {
         "group." + appIdentifier
     }
 
-//    static let extensionIdentifier = "br.com.test.call.block.CallSMSBlock.CallDirectory"
     var callDirectoryIdentifier: String {
         appIdentifier + ".CallDirectory"
     }

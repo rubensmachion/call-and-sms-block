@@ -39,8 +39,9 @@ struct HomeView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
             } else if viewModel.searchResults.isEmpty {
-                EmptyStateView(title: "Sem bloqueios")
+                EmptyStateView(title: "No blocked")
             } else {
+
                 List(viewModel.searchResults) { item in
                     HomeViewCell(item: item)
                 }

@@ -117,7 +117,3 @@ struct PhoneNumberDetailView: View {
             .foregroundStyle(.gray)
     }
 }
-
-//#Preview {
-//    PhoneNumberDetail(phoneNumber: nil)
-//}

@@ -1,7 +1,5 @@
 import SwiftUI
 
-public typealias AppDestination = Identifiable & Hashable
-
 open class AppCoordinator: AppCoordinatorProtocol {
 
     @Published var path: NavigationPath = .init()

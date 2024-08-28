@@ -39,8 +39,12 @@ final class AppCallDirectoryProvider {
                     statusString = "disabled"
                 case .enabled:
                     statusString = "enabled"
+                default:
+                    statusString = "none"
                 }
                 print("getEnabledStatusForExtension", statusString)
+
+                // TODO: Handle flow when extension disabled
             })
     }
 }

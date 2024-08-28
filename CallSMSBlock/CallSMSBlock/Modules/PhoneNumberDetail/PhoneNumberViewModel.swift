@@ -12,7 +12,6 @@ protocol PhoneNumberViewModelProtocol: ObservableObject {
 final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
     // MARK: - Properties
     private let appCoordinator: AppCoordinator
-    private let manager = BlockNumberDatabaseManager.shared
     private let phoneNumberUtility = PhoneNumberUtility()
     private let dataStore = DataStore()
 
@@ -85,24 +84,18 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
 
     private func saveSingleNumber(name: String?, number: Int) -> Bool {
         do {
-            let id = UUID().uuidString
-            let blockNumber = BlockNumberModel(id: id,
-                                               name: name,
-                                               number: number,
-                                               isBlocked: false,
-                                               shouldUnlock: false)
-
-            _ = BlockNumberData(blockNumber: blockNumber,
-                                context: dataStore.persistentContainer.viewContext)
+            let data = BlockNumberData(context: dataStore.persistentContainer.viewContext)
+            data.id = UUID().uuidString
+            data.name = name
+            data.number = Int64(number)
+            data.isBlocked = false
+            data.shouldUnlock = false
 
             try dataStore.save()
             AppCallDirectoryProvider.shared.reloadCallDirectory()
             return true
-//            let newBlockNumber = try manager.loadWallet(id: id)
-//            if newBlockNumber != nil {
-//                return true
-//            }
         } catch {
+            // TODO: Handle error
             print(error)
         }
 

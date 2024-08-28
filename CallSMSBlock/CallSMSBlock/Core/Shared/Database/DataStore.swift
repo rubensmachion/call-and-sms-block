@@ -1,6 +1,6 @@
 import CoreData
 
-class DataStore {
+final class DataStore {
 
     let persistentContainer: NSPersistentContainer
 
@@ -23,6 +23,7 @@ class DataStore {
         persistentContainer.persistentStoreDescriptions = [storeDescription]
         persistentContainer.loadPersistentStores { description, error in
             if let error = error {
+                // TODO: Handle error
                 print("Failed to load CoreData: \(error.localizedDescription)")
             }
         }

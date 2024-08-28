@@ -19,7 +19,7 @@ enum Screen: Identifiable, Hashable {
     var id: Self { return self }
 
     case home
-    case phoneNumberDetail(phoneNumber: PhoneNumberModel?)
+    case phoneNumberDetail(phoneNumber: BlockNumberData?)
 }
 
 enum Sheet: Identifiable, Hashable {
