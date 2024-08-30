@@ -38,7 +38,10 @@ final class DataStore {
         return result
     }
 
-    func save() throws {
-        try persistentContainer.viewContext.save()
+    func save(context: NSManagedObjectContext? = nil) throws {
+        let newContext: NSManagedObjectContext? = context ?? persistentContainer.viewContext
+        if newContext?.hasChanges ?? false {
+            try newContext?.save()
+        }
     }
 }

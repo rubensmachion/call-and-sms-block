@@ -65,6 +65,8 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
 
     // MARK: - Private
     private func saveRangeNumber(name: String?, range: ClosedRange<Int>) async -> Bool {
+        let group = BlockNumberGroup(dataStore: dataStore)
+
         _ = range.map { number in
             let data = BlockNumberData(context: dataStore.persistentContainer.viewContext)
             data.id = UUID().uuidString
@@ -72,17 +74,31 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
             data.number = Int64(number)
             data.isBlocked = false
             data.shouldUnlock = false
+
+            group.addToNumbers(data)
+
             return data
         }
         do {
+            let lowerBound = try phoneNumberUtility.parse("\(range.lowerBound)")
+            let upperBound = try phoneNumberUtility.parse("\(range.upperBound)")
+            let subtitle = "\(phoneNumberUtility.format(lowerBound, toType: .national)) - \(phoneNumberUtility.format(upperBound, toType: .national))"
+            group.id = UUID().uuidString
+            group.title = name ?? "No identification"
+            group.subtitle = subtitle
+            group.createdDate = Date()
+
             try dataStore.save()
             return true
         } catch {
+            print(error.localizedDescription)
             return false
         }
     }
 
     private func saveSingleNumber(name: String?, number: Int) -> Bool {
+        let group = BlockNumberGroup(dataStore: dataStore)
+
         do {
             let data = BlockNumberData(context: dataStore.persistentContainer.viewContext)
             data.id = UUID().uuidString
@@ -90,6 +106,15 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
             data.number = Int64(number)
             data.isBlocked = false
             data.shouldUnlock = false
+            
+            group.addToNumbers(data)
+
+            let lowerBound = try phoneNumberUtility.parse("\(number)")
+
+            group.id = UUID().uuidString
+            group.title = name ?? "No identification"
+            group.subtitle = "\(phoneNumberUtility.format(lowerBound, toType: .national))"
+            group.createdDate = Date()
 
             try dataStore.save()
             AppCallDirectoryProvider.shared.reloadCallDirectory()

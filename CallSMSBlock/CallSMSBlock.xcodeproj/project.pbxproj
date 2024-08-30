@@ -51,6 +51,17 @@
 		7781E7C72C7E7B5400423F9F /* AppCoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7781E7942C7E02F000423F9F /* AppCoreData.xcdatamodeld */; };
 		7781E7C82C7E7C6100423F9F /* BlockNumberData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7781E79B2C7E14C900423F9F /* BlockNumberData.swift */; };
 		7781E7C92C7E7CEF00423F9F /* AppCallDirectoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7781E7A52C7E521B00423F9F /* AppCallDirectoryProvider.swift */; };
+		77A9F68F2C82111200DF5C90 /* BlockNumberGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */; };
+		77A9F6922C82129400DF5C90 /* ManagedDataProcol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */; };
+		77A9F6932C82129400DF5C90 /* ManagedDataProcol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */; };
+		77A9F6942C82129400DF5C90 /* ManagedDataProcol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */; };
+		77A9F6952C82129400DF5C90 /* ManagedDataProcol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */; };
+		77A9F6962C8213A500DF5C90 /* AppCoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7781E7942C7E02F000423F9F /* AppCoreData.xcdatamodeld */; };
+		77A9F6AB2C8215BB00DF5C90 /* BlockNumberGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */; };
+		77A9F6AC2C8215BC00DF5C90 /* BlockNumberGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */; };
+		77A9F6AD2C8215BC00DF5C90 /* BlockNumberGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */; };
+		77A9F6AE2C8215C500DF5C90 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771B18F82C7D5D1400AB9936 /* DataStore.swift */; };
+		77A9F6AF2C8215D100DF5C90 /* BlockNumberData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7781E79B2C7E14C900423F9F /* BlockNumberData.swift */; };
 		77E62EB92C7F690E00B3B0EF /* CallSMSBlockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EB82C7F690E00B3B0EF /* CallSMSBlockTests.swift */; };
 		77E62EBD2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EBB2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift */; };
 		77E62EBE2C7F694300B3B0EF /* CallSMSBlockUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EBC2C7F694300B3B0EF /* CallSMSBlockUITests.swift */; };
@@ -171,6 +182,8 @@
 		7781E7B62C7E5E6700423F9F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		7781E7B82C7E5E6700423F9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7781E7BF2C7E5E7A00423F9F /* UnwantedComunication.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UnwantedComunication.entitlements; sourceTree = "<group>"; };
+		77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNumberGroup.swift; sourceTree = "<group>"; };
+		77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedDataProcol.swift; sourceTree = "<group>"; };
 		77E62EB82C7F690E00B3B0EF /* CallSMSBlockTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockTests.swift; sourceTree = "<group>"; };
 		77E62EBB2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		77E62EBC2C7F694300B3B0EF /* CallSMSBlockUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockUITests.swift; sourceTree = "<group>"; };
@@ -380,7 +393,7 @@
 		771B18C22C7CC2AC00AB9936 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				7781E79B2C7E14C900423F9F /* BlockNumberData.swift */,
+				77A9F6902C82112100DF5C90 /* Models */,
 				771B18F82C7D5D1400AB9936 /* DataStore.swift */,
 				7781E7942C7E02F000423F9F /* AppCoreData.xcdatamodeld */,
 			);
@@ -422,6 +435,16 @@
 				7781E7B82C7E5E6700423F9F /* Info.plist */,
 			);
 			path = UnwantedComunication;
+			sourceTree = "<group>";
+		};
+		77A9F6902C82112100DF5C90 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7781E79B2C7E14C900423F9F /* BlockNumberData.swift */,
+				77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */,
+				77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		77E62EB72C7F690200B3B0EF /* CallSMSBlockTests */ = {
@@ -690,9 +713,11 @@
 				771B18BF2C7CB41000AB9936 /* HomeViewCell.swift in Sources */,
 				771B18F92C7D5D1400AB9936 /* DataStore.swift in Sources */,
 				7781E78F2C7DFBC500423F9F /* Bundle+Extensions.swift in Sources */,
+				77A9F6922C82129400DF5C90 /* ManagedDataProcol.swift in Sources */,
 				771B18A22C79FDF000AB9936 /* AppCoordinator.swift in Sources */,
 				771B18AB2C7A04AE00AB9936 /* PhoneNumberDetailView.swift in Sources */,
 				771B18202C76A0A700AB9936 /* CallSMSBlockApp.swift in Sources */,
+				77A9F68F2C82111200DF5C90 /* BlockNumberGroup.swift in Sources */,
 				771B18A42C79FECB00AB9936 /* AppCoordinatorView.swift in Sources */,
 				771B18BD2C7CB2D600AB9936 /* EmptyStateView.swift in Sources */,
 			);
@@ -720,7 +745,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77A9F6932C82129400DF5C90 /* ManagedDataProcol.swift in Sources */,
 				7781E7A82C7E557300423F9F /* AppCoreData.xcdatamodeld in Sources */,
+				77A9F6AB2C8215BB00DF5C90 /* BlockNumberGroup.swift in Sources */,
 				7781E7902C7DFD5400423F9F /* Bundle+Extensions.swift in Sources */,
 				7781E7A72C7E54D600423F9F /* DataStore.swift in Sources */,
 				771B18E12C7D1CB900AB9936 /* FIleManager+Util.swift in Sources */,
@@ -733,8 +760,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77A9F6AE2C8215C500DF5C90 /* DataStore.swift in Sources */,
+				77A9F6962C8213A500DF5C90 /* AppCoreData.xcdatamodeld in Sources */,
+				77A9F6942C82129400DF5C90 /* ManagedDataProcol.swift in Sources */,
 				7781E7912C7DFD5400423F9F /* Bundle+Extensions.swift in Sources */,
 				771B18E42C7D1CBA00AB9936 /* FIleManager+Util.swift in Sources */,
+				77A9F6AC2C8215BC00DF5C90 /* BlockNumberGroup.swift in Sources */,
+				77A9F6AF2C8215D100DF5C90 /* BlockNumberData.swift in Sources */,
 				771B18692C77D3E200AB9936 /* MessageFilterExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -743,9 +775,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77A9F6952C82129400DF5C90 /* ManagedDataProcol.swift in Sources */,
 				7781E7C72C7E7B5400423F9F /* AppCoreData.xcdatamodeld in Sources */,
 				7781E7C32C7E7B3500423F9F /* FIleManager+Util.swift in Sources */,
 				7781E7C92C7E7CEF00423F9F /* AppCallDirectoryProvider.swift in Sources */,
+				77A9F6AD2C8215BC00DF5C90 /* BlockNumberGroup.swift in Sources */,
 				7781E7C62C7E7B5000423F9F /* DataStore.swift in Sources */,
 				7781E7B42C7E5E6700423F9F /* UnwantedCommunicationReportingExtension.swift in Sources */,
 				7781E7C82C7E7C6100423F9F /* BlockNumberData.swift in Sources */,

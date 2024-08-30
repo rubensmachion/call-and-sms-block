@@ -16,7 +16,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext, 
                                             completion: @escaping () -> Void) {
         Task {
-            let result: [BlockNumberData] = try await dataStore.fetch(predicate: BlockNumberData.unblockedNumberPredicate())
+            let result: [BlockNumberData] = try await dataStore.fetch(predicate: BlockNumberData.defaultPredicate())
             guard !result.isEmpty else {
                 completion()
                 return

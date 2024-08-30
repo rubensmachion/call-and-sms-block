@@ -4,8 +4,8 @@ import CoreData
 
 protocol HomeViewModelProtocol: ObservableObject {
     var isLoading: Bool { get }
-    var searchResults: [BlockNumberData] { get }
-    var listaData: [BlockNumberData] { get }
+    var searchResults: [BlockNumberGroup] { get }
+    var listaData: [BlockNumberGroup] { get }
 
     func reloadData(filter text: String?)
 
@@ -20,9 +20,9 @@ final class HomeViewModel: HomeViewModelProtocol {
     private let dataStore = DataStore()
 
     @Published var isLoading = false
-    @Published var searchResults: [BlockNumberData] = []
+    @Published var searchResults: [BlockNumberGroup] = []
 
-    var listaData: [BlockNumberData] = []
+    var listaData: [BlockNumberGroup] = []
 
     // MARK: - Init
     init(appCoordinator: AppCoordinator) {
@@ -35,15 +35,8 @@ final class HomeViewModel: HomeViewModelProtocol {
         isLoading = true
         Task {
             do {
-                let result: [BlockNumberData]? = try await dataStore.fetch(sortDescriptors: BlockNumberData.ascendingdateSortDescriptor())
-                listaData = result?.filter {
-                    !$0.shouldUnlock
-                }/*.compactMap {
-                    .init(id: $0.id ?? "",
-                          number: $0.number,
-                          name: $0.name,
-                          formattedNumber: $0.number.toFormattedPhoneNumber() ?? "-")
-                }*/ ?? []
+                let result: [BlockNumberGroup]? = try await dataStore.fetch(sortDescriptors: BlockNumberGroup.ascendingdateSortDescriptor())
+                listaData = result ?? []
                 await MainActor.run {
                     self.filter(text: text ?? "")
                     self.isLoading = false
@@ -68,9 +61,9 @@ final class HomeViewModel: HomeViewModelProtocol {
         if text.isEmpty {
             searchResults = listaData
         } else {
-            searchResults = listaData.filter {
-                $0.number.toFormattedPhoneNumber()?.lowercased().contains(text.lowercased()) ?? false
-            }
+//            searchResults = listaData.filter {
+//                $0.number.toFormattedPhoneNumber()?.lowercased().contains(text.lowercased()) ?? false
+//            }
         }
     }
 }

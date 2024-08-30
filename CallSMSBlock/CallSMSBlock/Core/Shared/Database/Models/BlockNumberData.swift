@@ -1,7 +1,7 @@
 import Foundation
 import CoreData
 
-class BlockNumberData: NSManagedObject, Identifiable {
+class BlockNumberData: NSManagedObject, ManagedDataProtocol, Identifiable {
 
     @NSManaged var id: String
     @NSManaged var name: String?
@@ -10,11 +10,15 @@ class BlockNumberData: NSManagedObject, Identifiable {
     @NSManaged var shouldUnlock: Bool
     @NSManaged var date: Date
 
+    convenience init(dataStore: DataStore) {
+        self.init(context: dataStore.persistentContainer.viewContext)
+    }
+
     static func ascendingdateSortDescriptor() -> [NSSortDescriptor] {
         [NSSortDescriptor(key: "date", ascending: true)]
     }
 
-    static func unblockedNumberPredicate() -> NSPredicate {
+    static func defaultPredicate() -> NSPredicate {
         NSPredicate(format: "isBlocked == false")
     }
 }

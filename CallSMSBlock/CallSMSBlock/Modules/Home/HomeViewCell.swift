@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct HomeViewCell: View {
-    
-    private let item: BlockNumberData
 
-    init(item: BlockNumberData) {
+    private let item: BlockNumberGroup
+
+    init(item: BlockNumberGroup) {
         self.item = item
     }
 
@@ -12,13 +12,12 @@ struct HomeViewCell: View {
         HStack {
             Image(systemName: "phone")
             VStack(alignment: .leading) {
-                if let name = item.name {
-                    Text(name)
-                        .font(.headline)
-                }
-                Text(item.number.toFormattedPhoneNumber() ?? "-")
+
+                Text(item.title)
+                    .font(.headline)
+                Text(item.subtitle)
                     .font(.body)
-                Text("Spam")
+                Text("Total: \(item.numbers?.count ?? 0)")
                     .font(.body)
             }
             Spacer()
