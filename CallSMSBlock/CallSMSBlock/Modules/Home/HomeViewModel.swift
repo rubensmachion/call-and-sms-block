@@ -16,7 +16,7 @@ protocol HomeViewModelProtocol: ObservableObject {
 final class HomeViewModel: HomeViewModelProtocol {
 
     // MARK: - Properties
-    private let appCoordinator: AppCoordinator
+    private let coordinator: HomeCoordinatorProtocol
     private let dataStore = DataStore()
 
     @Published var isLoading = false
@@ -25,8 +25,8 @@ final class HomeViewModel: HomeViewModelProtocol {
     var listaData: [BlockNumberGroup] = []
 
     // MARK: - Init
-    init(appCoordinator: AppCoordinator) {
-        self.appCoordinator = appCoordinator
+    init(coordinator: HomeCoordinatorProtocol) {
+        self.coordinator = coordinator
 
         reloadData(filter: nil)
     }
@@ -48,11 +48,12 @@ final class HomeViewModel: HomeViewModelProtocol {
     }
 
     func showNewPhoneNumber() {
-        appCoordinator.push(.phoneNumberDetail(phoneNumber: nil))
+        coordinator.showAddSpam()
     }
 
     func showEditPhoneNumber() {
         // TODO: Handle edit information
+//        coordinator.showEdit(data: .)
 //        appCoordinator.push(.phoneNumberDetail(phoneNumber: PhoneNumberModel(id: "teste", name: "Teste")))
     }
 

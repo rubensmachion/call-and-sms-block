@@ -6,8 +6,8 @@ struct HomeView: View {
 
     @State var searchText: String = ""
 
-    init(appCoordinator: AppCoordinator) {
-        self.viewModel = HomeViewModel(appCoordinator: appCoordinator)
+    init(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -51,6 +51,6 @@ struct HomeView: View {
     }
 }
 
-#Preview {
-    HomeView(appCoordinator: .init())
-}
+//#Preview {
+//    HomeView(viewModel: .init(appCoordinator: .init()))
+//}

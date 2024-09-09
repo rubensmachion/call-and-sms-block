@@ -62,6 +62,10 @@
 		77A9F6AD2C8215BC00DF5C90 /* BlockNumberGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */; };
 		77A9F6AE2C8215C500DF5C90 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771B18F82C7D5D1400AB9936 /* DataStore.swift */; };
 		77A9F6AF2C8215D100DF5C90 /* BlockNumberData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7781E79B2C7E14C900423F9F /* BlockNumberData.swift */; };
+		77B4BD672C8F3A03009C25CC /* AnyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD662C8F3A03009C25CC /* AnyScreen.swift */; };
+		77B4BD692C8F3F01009C25CC /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD682C8F3F01009C25CC /* HomeCoordinator.swift */; };
+		77B4BD6B2C8F4491009C25CC /* HomeRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD6A2C8F4491009C25CC /* HomeRoute.swift */; };
+		77B4BD6D2C8F4587009C25CC /* AnyIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD6C2C8F4587009C25CC /* AnyIdentifiable.swift */; };
 		77E62EB92C7F690E00B3B0EF /* CallSMSBlockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EB82C7F690E00B3B0EF /* CallSMSBlockTests.swift */; };
 		77E62EBD2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EBB2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift */; };
 		77E62EBE2C7F694300B3B0EF /* CallSMSBlockUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EBC2C7F694300B3B0EF /* CallSMSBlockUITests.swift */; };
@@ -184,6 +188,10 @@
 		7781E7BF2C7E5E7A00423F9F /* UnwantedComunication.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UnwantedComunication.entitlements; sourceTree = "<group>"; };
 		77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNumberGroup.swift; sourceTree = "<group>"; };
 		77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedDataProcol.swift; sourceTree = "<group>"; };
+		77B4BD662C8F3A03009C25CC /* AnyScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyScreen.swift; sourceTree = "<group>"; };
+		77B4BD682C8F3F01009C25CC /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
+		77B4BD6A2C8F4491009C25CC /* HomeRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRoute.swift; sourceTree = "<group>"; };
+		77B4BD6C2C8F4587009C25CC /* AnyIdentifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyIdentifiable.swift; sourceTree = "<group>"; };
 		77E62EB82C7F690E00B3B0EF /* CallSMSBlockTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockTests.swift; sourceTree = "<group>"; };
 		77E62EBB2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		77E62EBC2C7F694300B3B0EF /* CallSMSBlockUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockUITests.swift; sourceTree = "<group>"; };
@@ -330,6 +338,8 @@
 				771B189E2C79FBBA00AB9936 /* AppCoordinatorProtocol.swift */,
 				771B18A12C79FDF000AB9936 /* AppCoordinator.swift */,
 				771B18A32C79FECB00AB9936 /* AppCoordinatorView.swift */,
+				77B4BD662C8F3A03009C25CC /* AnyScreen.swift */,
+				77B4BD6C2C8F4587009C25CC /* AnyIdentifiable.swift */,
 			);
 			path = AppCoordinator;
 			sourceTree = "<group>";
@@ -349,6 +359,8 @@
 				771B18A72C7A026100AB9936 /* HomeView.swift */,
 				771B18AE2C7A065900AB9936 /* HomeViewModel.swift */,
 				771B18BE2C7CB41000AB9936 /* HomeViewCell.swift */,
+				77B4BD682C8F3F01009C25CC /* HomeCoordinator.swift */,
+				77B4BD6A2C8F4491009C25CC /* HomeRoute.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -709,16 +721,20 @@
 				771B18A82C7A026100AB9936 /* HomeView.swift in Sources */,
 				771B18CA2C7CC7AE00AB9936 /* String+Util.swift in Sources */,
 				771B18C82C7CC5BD00AB9936 /* PhoneNumberViewModel.swift in Sources */,
+				77B4BD6B2C8F4491009C25CC /* HomeRoute.swift in Sources */,
 				771B185A2C76A4FC00AB9936 /* AppDelegate.swift in Sources */,
 				771B18BF2C7CB41000AB9936 /* HomeViewCell.swift in Sources */,
 				771B18F92C7D5D1400AB9936 /* DataStore.swift in Sources */,
 				7781E78F2C7DFBC500423F9F /* Bundle+Extensions.swift in Sources */,
+				77B4BD672C8F3A03009C25CC /* AnyScreen.swift in Sources */,
 				77A9F6922C82129400DF5C90 /* ManagedDataProcol.swift in Sources */,
 				771B18A22C79FDF000AB9936 /* AppCoordinator.swift in Sources */,
+				77B4BD692C8F3F01009C25CC /* HomeCoordinator.swift in Sources */,
 				771B18AB2C7A04AE00AB9936 /* PhoneNumberDetailView.swift in Sources */,
 				771B18202C76A0A700AB9936 /* CallSMSBlockApp.swift in Sources */,
 				77A9F68F2C82111200DF5C90 /* BlockNumberGroup.swift in Sources */,
 				771B18A42C79FECB00AB9936 /* AppCoordinatorView.swift in Sources */,
+				77B4BD6D2C8F4587009C25CC /* AnyIdentifiable.swift in Sources */,
 				771B18BD2C7CB2D600AB9936 /* EmptyStateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

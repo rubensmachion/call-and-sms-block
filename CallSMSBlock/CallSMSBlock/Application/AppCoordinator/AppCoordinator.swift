@@ -1,21 +1,25 @@
 import SwiftUI
 
 open class AppCoordinator: AppCoordinatorProtocol {
+    
+    // MARK: - Properties
 
     @Published var path: NavigationPath = .init()
-    @Published var sheet: Sheet?
-    @Published var fullScreenCover: FullScreenCover?
+    @Published var sheet: AnyScreen?
+    @Published var fullScreenCover: AnyScreen?
 
-    func push(_ screen: Screen) {
-        path.append(screen)
+    // MARK: - Navigation
+
+    func push(_ screen: any AnyIdentifiable) {
+        path.append(AnyScreen(screen))
     }
     
-    func presentSheet(_ sheet: Sheet) {
-        self.sheet = sheet
+    func presentSheet(_ sheet: any AnyIdentifiable) {
+        self.sheet = AnyScreen(sheet)
     }
     
-    func presentFullScreenCover(_ fullScreenCover: FullScreenCover) {
-        self.fullScreenCover = fullScreenCover
+    func presentFullScreenCover(_ fullScreenCover: any AnyIdentifiable) {
+        self.fullScreenCover = AnyScreen(fullScreenCover)
     }
     
     func pop() {
@@ -34,29 +38,10 @@ open class AppCoordinator: AppCoordinatorProtocol {
         self.fullScreenCover = nil
     }
 
-    @ViewBuilder
-    func build(_ screen: Screen) -> some View {
-        switch screen {
-        case .home:
-            HomeView(appCoordinator: self)
-        case .phoneNumberDetail(let phoneNumber):
-            PhoneNumberDetailView(appCoordinator: self)
-        }
-    }
+    // MARK: - ViewBuilder
 
     @ViewBuilder
-    func build(_ sheet: Sheet) -> some View {
-        switch sheet {
-        case .someSheet:
-            Text("someSheet")
-        }
-    }
-
-    @ViewBuilder
-    func build(_ fullScreenCover: FullScreenCover) -> some View {
-        switch fullScreenCover {
-        case .someScreenCover:
-            Text("someScreenCover")
-        }
+    func build(_ screen: AnyScreen) -> some View {
+        screen.getView(self)
     }
  }

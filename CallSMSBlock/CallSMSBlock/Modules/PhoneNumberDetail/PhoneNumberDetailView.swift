@@ -9,8 +9,8 @@ struct PhoneNumberDetailView: View {
     @State private var fromPhoneNumber = ""
     @State private var toPhoneNumber = ""
 
-    init(appCoordinator: AppCoordinator) {
-        self.viewModel = .init(appCoordinator: appCoordinator)
+    init(viewModel: PhoneNumberViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {

@@ -5,8 +5,8 @@ struct AppCoordinatorView: View {
 
     var body: some View {
         NavigationStack(path: $appCoordinator.path) {
-            appCoordinator.build(Screen.home)
-                .navigationDestination(for: Screen.self) { screen in
+            appCoordinator.build(AnyScreen(HomeRoute.start))
+                .navigationDestination(for: AnyScreen.self) { screen in
                     appCoordinator.build(screen)
                 }
                 .sheet(item: $appCoordinator.sheet) { sheet in
