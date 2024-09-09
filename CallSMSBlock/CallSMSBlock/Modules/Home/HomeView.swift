@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var appCoordinator: AppCoordinator
     @ObservedObject var viewModel: HomeViewModel
 
     @State var searchText: String = ""

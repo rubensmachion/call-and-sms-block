@@ -7,7 +7,23 @@ struct CallSMSBlockApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AppCoordinatorView()
+            TabView {
+                AppCoordinatorView(startOn: HomeRoute.start)
+                    .tabItem {
+                        Image(systemName: "list.bullet")
+                        Text("Home")
+                    }
+                AppCoordinatorView(startOn: SearchRoute.start)
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Search")
+                    }
+                AppCoordinatorView(startOn: SettingsRoute.start)
+                    .tabItem {
+                        Image(systemName: "gear")
+                        Text("Settings")
+                    }
+            }
         }
     }
 }

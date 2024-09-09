@@ -3,9 +3,15 @@ import SwiftUI
 struct AppCoordinatorView: View {
     @StateObject var appCoordinator = AppCoordinator()
 
+    private let startOn: any AnyIdentifiable
+
+    init(startOn: any AnyIdentifiable) {
+        self.startOn = startOn
+    }
+
     var body: some View {
         NavigationStack(path: $appCoordinator.path) {
-            appCoordinator.build(AnyScreen(HomeRoute.start))
+            appCoordinator.build(AnyScreen(startOn))
                 .navigationDestination(for: AnyScreen.self) { screen in
                     appCoordinator.build(screen)
                 }
@@ -21,5 +27,5 @@ struct AppCoordinatorView: View {
 }
 
 #Preview {
-    AppCoordinatorView()
+    AppCoordinatorView(startOn: HomeRoute.start)
 }

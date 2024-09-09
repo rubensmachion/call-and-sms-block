@@ -9,15 +9,11 @@ enum HomeRoute: AnyIdentifiable {
     func getView(_ coordinator: AppCoordinator) -> AnyView {
         switch self {
         case .start:
-            let homeCoordinator = HomeCoordinator(appCoordinator: coordinator)
-            let viewModel = HomeViewModel(coordinator: homeCoordinator)
-            let view = HomeView(viewModel: viewModel)
-
+            let view = HomeCompose.setup(coordinator: coordinator)
             return AnyView(view)
 
         case .addNewNumber:
             let viewModel = PhoneNumberViewModel(appCoordinator: coordinator)
-
             return AnyView(PhoneNumberDetailView(viewModel: viewModel))
 
         case .editNumber(let phoneNumber):
