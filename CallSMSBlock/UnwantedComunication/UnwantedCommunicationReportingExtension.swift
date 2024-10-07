@@ -27,20 +27,34 @@ class UnwantedCommunicationReportingExtension: ILClassificationUIExtensionViewCo
             }
             let formatted = phoneNumberUtility.format(phone, toType: .international)
             numberLabel?.text = "Sample Number: \(formatted)"
+
         } else if let message = classificationRequest as? ILMessageClassificationRequest {
             // TODO: Handle SMS message reporting
+
+
         }
     }
     
+
     // Provide a classification response for the classification request
     override func classificationResponse(for request:ILClassificationRequest) -> ILClassificationResponse {
-        
-        if request is ILCallClassificationRequest {
-            // TODO: Call API to register this number
 
-            return ILClassificationResponse(action: .reportJunk)
+        if let call = request as? ILCallClassificationRequest,
+           let sender = call.callCommunications.last?.sender {
+            let payload: [String: AnyHashable] = [
+                "number": sender,
+                "identification": "Spam",
+                "classification": 0
+            ]
+
+            let action: ILClassificationAction = .reportJunk  // or .none, .reportNotJunk, .reportJunkAndBlockSender
+            let response = ILClassificationResponse(action: action)
+            response.userInfo = payload
+
+            return response
         } else {
             return ILClassificationResponse(action: .none)
         }
+//        return ILClassificationResponse(action: .none)
     }
 }

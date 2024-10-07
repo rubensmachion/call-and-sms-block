@@ -40,7 +40,6 @@ struct HomeView: View {
             } else if viewModel.searchResults.isEmpty {
                 EmptyStateView(title: "No blocked")
             } else {
-
                 List(viewModel.searchResults) { item in
                     HomeViewCell(item: item)
                 }

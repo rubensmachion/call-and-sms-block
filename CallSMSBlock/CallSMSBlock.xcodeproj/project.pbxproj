@@ -79,6 +79,9 @@
 		77B4BD992C8F64B8009C25CC /* SettingsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD932C8F64B8009C25CC /* SettingsBuilder.swift */; };
 		77B4BD9A2C8F64B8009C25CC /* SettingsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD942C8F64B8009C25CC /* SettingsRoute.swift */; };
 		77B4BD9B2C8F64B8009C25CC /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4BD952C8F64B8009C25CC /* SettingsService.swift */; };
+		77C277D12CA4971A001D78E4 /* ConnectionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77C277D02CA4971A001D78E4 /* ConnectionTest.swift */; };
+		77C277D22CA4971A001D78E4 /* ConnectionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77C277D02CA4971A001D78E4 /* ConnectionTest.swift */; };
+		77C277D32CA4971A001D78E4 /* ConnectionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77C277D02CA4971A001D78E4 /* ConnectionTest.swift */; };
 		77E62EB92C7F690E00B3B0EF /* CallSMSBlockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EB82C7F690E00B3B0EF /* CallSMSBlockTests.swift */; };
 		77E62EBD2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EBB2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift */; };
 		77E62EBE2C7F694300B3B0EF /* CallSMSBlockUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E62EBC2C7F694300B3B0EF /* CallSMSBlockUITests.swift */; };
@@ -218,6 +221,7 @@
 		77B4BD932C8F64B8009C25CC /* SettingsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsBuilder.swift; sourceTree = "<group>"; };
 		77B4BD942C8F64B8009C25CC /* SettingsRoute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRoute.swift; sourceTree = "<group>"; };
 		77B4BD952C8F64B8009C25CC /* SettingsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
+		77C277D02CA4971A001D78E4 /* ConnectionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionTest.swift; sourceTree = "<group>"; };
 		77E62EB82C7F690E00B3B0EF /* CallSMSBlockTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockTests.swift; sourceTree = "<group>"; };
 		77E62EBB2C7F694300B3B0EF /* CallSMSBlockUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		77E62EBC2C7F694300B3B0EF /* CallSMSBlockUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSMSBlockUITests.swift; sourceTree = "<group>"; };
@@ -407,9 +411,11 @@
 		771B18B42C7A180F00AB9936 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				77C277CF2CA48854001D78E4 /* Network */,
 				7781E7922C7DFD7000423F9F /* Shared */,
 				771B18BB2C7CB2CB00AB9936 /* UI */,
 				771B18B82C7CB28600AB9936 /* Extensions */,
+				77C277D02CA4971A001D78E4 /* ConnectionTest.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -512,6 +518,13 @@
 				77B4BD952C8F64B8009C25CC /* SettingsService.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		77C277CF2CA48854001D78E4 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		77E62EB72C7F690200B3B0EF /* CallSMSBlockTests */ = {
@@ -776,6 +789,7 @@
 				771B18AF2C7A065900AB9936 /* HomeViewModel.swift in Sources */,
 				771B18A82C7A026100AB9936 /* HomeView.swift in Sources */,
 				771B18CA2C7CC7AE00AB9936 /* String+Util.swift in Sources */,
+				77C277D12CA4971A001D78E4 /* ConnectionTest.swift in Sources */,
 				77B4BD782C8F5A8A009C25CC /* SearchView.swift in Sources */,
 				77B4BD7A2C8F5B2F009C25CC /* SearchRoute.swift in Sources */,
 				771B18C82C7CC5BD00AB9936 /* PhoneNumberViewModel.swift in Sources */,
@@ -851,6 +865,7 @@
 				771B18E42C7D1CBA00AB9936 /* FIleManager+Util.swift in Sources */,
 				77A9F6AC2C8215BC00DF5C90 /* BlockNumberGroup.swift in Sources */,
 				77A9F6AF2C8215D100DF5C90 /* BlockNumberData.swift in Sources */,
+				77C277D22CA4971A001D78E4 /* ConnectionTest.swift in Sources */,
 				771B18692C77D3E200AB9936 /* MessageFilterExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -860,6 +875,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				77A9F6952C82129400DF5C90 /* ManagedDataProcol.swift in Sources */,
+				77C277D32CA4971A001D78E4 /* ConnectionTest.swift in Sources */,
 				7781E7C72C7E7B5400423F9F /* AppCoreData.xcdatamodeld in Sources */,
 				7781E7C32C7E7B3500423F9F /* FIleManager+Util.swift in Sources */,
 				7781E7C92C7E7CEF00423F9F /* AppCallDirectoryProvider.swift in Sources */,
