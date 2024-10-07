@@ -4,7 +4,6 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:api-dev.callspam.org</string>
 		<string>classificationreport:api-dev.callspam.org</string>
 		<string>messagefilter:api-dev.callspam.org</string>
 	</array>

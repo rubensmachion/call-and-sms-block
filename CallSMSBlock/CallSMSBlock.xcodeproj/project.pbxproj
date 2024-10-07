@@ -175,7 +175,6 @@
 		771B185B2C76ADC600AB9936 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		771B18662C77D3E200AB9936 /* MessageFilter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MessageFilter.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		771B18682C77D3E200AB9936 /* MessageFilterExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFilterExtension.swift; sourceTree = "<group>"; };
-		771B186A2C77D3E200AB9936 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		771B189E2C79FBBA00AB9936 /* AppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		771B18A12C79FDF000AB9936 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		771B18A32C79FECB00AB9936 /* AppCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinatorView.swift; sourceTree = "<group>"; };
@@ -202,6 +201,7 @@
 		7781E7B62C7E5E6700423F9F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		7781E7B82C7E5E6700423F9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7781E7BF2C7E5E7A00423F9F /* UnwantedComunication.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UnwantedComunication.entitlements; sourceTree = "<group>"; };
+		779D55792CB3E7E9000B25AF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77A9F68E2C82111200DF5C90 /* BlockNumberGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNumberGroup.swift; sourceTree = "<group>"; };
 		77A9F6912C82129400DF5C90 /* ManagedDataProcol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedDataProcol.swift; sourceTree = "<group>"; };
 		77B4BD662C8F3A03009C25CC /* AnyScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyScreen.swift; sourceTree = "<group>"; };
@@ -340,7 +340,7 @@
 			children = (
 				771B18D32C7CED2B00AB9936 /* MessageFilter.entitlements */,
 				771B18682C77D3E200AB9936 /* MessageFilterExtension.swift */,
-				771B186A2C77D3E200AB9936 /* Info.plist */,
+				779D55792CB3E7E9000B25AF /* Info.plist */,
 			);
 			path = MessageFilter;
 			sourceTree = "<group>";

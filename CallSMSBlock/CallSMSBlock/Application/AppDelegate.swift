@@ -18,17 +18,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //            }
 //        }
 
-        let domain: CFString = "api-dev.callspam.org" as CFString
-        let account = "rubens.machion" as CFString
-        let pass = "123456" as CFString
-
-        SecAddSharedWebCredential(domain, account, pass) { error in
-            if let error = error {
-                print("\(#function): \(error.localizedDescription)")
-            } else {
-                print("sucess")
-            }
-        }
+//        let domain: CFString = "api-dev.callspam.org" as CFString
+//        let account = "rubens.machion" as CFString
+//        let pass = "123456" as CFString
+//
+//        SecAddSharedWebCredential(domain, account, pass) { error in
+//            if let error = error {
+//                print("\(#function): \(error.localizedDescription)")
+//            } else {
+//                print("sucess")
+//            }
+//        }
 
         return true
     }
