@@ -9,7 +9,6 @@ class UnwantedCommunicationReportingExtension: ILClassificationUIExtensionViewCo
 
     private let phoneNumberUtility = PhoneNumberUtility()
     private var phone: PhoneNumber?
-    private let dataStore = DataStore()
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
