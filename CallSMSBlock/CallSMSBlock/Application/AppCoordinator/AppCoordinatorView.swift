@@ -26,6 +26,6 @@ struct AppCoordinatorView: View {
     }
 }
 
-#Preview {
-    AppCoordinatorView(startOn: HomeRoute.start)
-}
+//#Preview {
+//    AppCoordinatorView(startOn: HomeRoute.start)
+//}

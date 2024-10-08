@@ -26,6 +26,6 @@ struct SearchView: View {
     }
 }
 
-#Preview {
-    SearchBuilder.setup(coordinator: AppCoordinator())
-}
+//#Preview {
+//    SearchBuilder.setup(coordinator: AppCoordinator())
+//}

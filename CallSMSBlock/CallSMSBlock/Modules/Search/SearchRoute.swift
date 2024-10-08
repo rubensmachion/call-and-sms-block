@@ -12,13 +12,13 @@ enum SearchRoute: AnyIdentifiable {
         
         switch self {
         case .start:
-            AnyView(SearchBuilder.setup(coordinator: coordinator))
+            return AnyView(SearchBuilder.setup(coordinator: coordinator))
         case .pushScreen:
-            AnyView(Text("pushScreen"))
+            return AnyView(Text("pushScreen"))
         case .presentScreen:
-            AnyView(Text("presentScreen"))
+            return AnyView(Text("presentScreen"))
         case .fullScreenCover:
-            AnyView(Text("fullScreenCover"))
+            return AnyView(Text("fullScreenCover"))
         }
     }
 }

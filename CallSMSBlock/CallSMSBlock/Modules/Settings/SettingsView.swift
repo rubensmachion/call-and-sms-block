@@ -26,6 +26,6 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsBuilder.setup(coordinator: AppCoordinator())
-}
+//#Preview {
+//    SettingsBuilder.setup(coordinator: AppCoordinator())
+//}
