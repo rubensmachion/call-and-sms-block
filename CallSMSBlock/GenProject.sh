@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Remove some files
-rm -r CallSMSBlock.xcodeproj
+rm -r GenericApp.xcodeproj
 
 # Gen samples project
 xcodegen
 
-open CallSMSBlock.xcodeproj
+open GenericApp.xcodeproj

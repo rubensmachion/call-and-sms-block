@@ -1,4 +1,4 @@
-name: CallSMSBlock
+name: GenericApp
 
 options:
   developmentLanguage: pt-BR
@@ -37,7 +37,7 @@ targets:
       CURRENT_PROJECT_VERSION: $(CURRENT_PROJECT_VERSION)
       OTHER_LDFLAGS: ["$(inherited)", -ObjC]
       FRAMEWORK_SEARCH_PATHS: ["$(inherited)", "$(PROJECT_DIR)"]
-    sources: [CallDirectory, CallSMSBlock/Core/Shared]
+    sources: [CallDirectory, GenericApp/Core/Shared]
     info:
       path: CallDirectory/Config/Info.plist
       properties:
@@ -159,12 +159,12 @@ targets:
   ####################
   # Main app
   ####################
-  CallSMSBlock:
+  GenericApp:
     type: application
     platform: iOS
     configFiles:
-      Development: CallSMSBlock/Config/dev.xcconfig
-      Production: CallSMSBlock/Config/dev.xcconfig
+      Development: GenericApp/Config/dev.xcconfig
+      Production: GenericApp/Config/dev.xcconfig
     settings:
       TARGETED_DEVICE_FAMILY: 1
       ASSETCATALOG_COMPILER_APPICON_NAME: $(APP_ICON)
@@ -179,10 +179,10 @@ targets:
       CURRENT_PROJECT_VERSION: $(CURRENT_PROJECT_VERSION)
       OTHER_LDFLAGS: ["$(inherited)", -ObjC]
       FRAMEWORK_SEARCH_PATHS: ["$(inherited)", "$(PROJECT_DIR)"]
-    sources: [CallSMSBlock]
-    resources: [CallSMSBlock/Resources]
+    sources: [GenericApp]
+    resources: [GenericApp/Resources]
     info:
-      path: CallSMSBlock/Config/Info.plist
+      path: GenericApp/Config/Info.plist
       properties:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
@@ -199,7 +199,7 @@ targets:
         LSRequiresIPhoneOS: YES
         ENVIRONMENT: $(ENVIRONMENT)
     entitlements:
-      path: CallSMSBlock/CallSMSBlock.entitlements
+      path: GenericApp/GenericApp.entitlements
       properties:
         com.apple.developer.associated-domains: [
           "classificationreport:api-dev.callspam.org",
@@ -226,6 +226,6 @@ schemes:
       config: Development
     build:
       targets:
-        CallSMSBlock: all
+        GenericApp: all
       parallelizeBuild: true
       buildImplicitDependencies: true
