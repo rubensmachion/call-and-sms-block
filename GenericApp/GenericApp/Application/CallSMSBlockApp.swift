@@ -8,6 +8,11 @@ struct CallSMSBlockApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
+                AppCoordinatorView(startOn: Home2Route.start)
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("Home")
+                    }
                 AppCoordinatorView(startOn: HomeRoute.start)
                     .tabItem {
                         Image(systemName: "list.bullet")
