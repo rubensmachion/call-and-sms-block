@@ -214,8 +214,8 @@ targets:
         embed: true
       - target: MessageFilter
         embed: true
-      # - target: CallDirectory
-        # embed: true
+      - target: CallDirectory
+        embed: true
 
 
 schemes:
