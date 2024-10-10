@@ -1,4 +1,5 @@
 import SwiftUI
+import AppNavigationKit
 
 struct SearchView: View {
     @EnvironmentObject var appCoordinator: AppCoordinator

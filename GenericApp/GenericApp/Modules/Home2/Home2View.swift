@@ -1,4 +1,5 @@
 import SwiftUI
+import AppNavigationKit
 
 struct Home2View: View {
     // MARK: - Properties
@@ -42,15 +43,11 @@ struct Home2View: View {
                 ForEach($viewModel.items) { item in
                     Home2CellView(item: item.wrappedValue)
                         .onTapGesture {
-                            print(item.wrappedValue.rawValue)
+                            viewModel.showOption(item.wrappedValue)
                         }
                 }
             })
             .padding()
         }
     }
-}
-
-#Preview {
-    Home2Builder.setup(coordinator: AppCoordinator())
 }

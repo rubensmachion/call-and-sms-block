@@ -1,4 +1,5 @@
 import Foundation
+import AppNavigationKit
 
 final class Home2Builder {
 

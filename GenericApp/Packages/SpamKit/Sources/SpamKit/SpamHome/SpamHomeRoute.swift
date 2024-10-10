@@ -2,7 +2,7 @@ import Foundation
 import AppNavigationKit
 import SwiftUI
 
-enum SettingsRoute: AnyIdentifiable {
+enum SpamHomeRoute: AnyIdentifiable {
     case start
     case pushScreen
     case presentScreen
@@ -13,13 +13,13 @@ enum SettingsRoute: AnyIdentifiable {
         
         switch self {
         case .start:
-            return AnyView(SettingsBuilder.setup(coordinator: coordinator))
+            AnyView(SpamHomeBuilder.setup(coordinator: coordinator))
         case .pushScreen:
-            return AnyView(Text("pushScreen"))
+            AnyView(Text("pushScreen"))
         case .presentScreen:
-            return AnyView(Text("presentScreen"))
+            AnyView(Text("presentScreen"))
         case .fullScreenCover:
-            return AnyView(Text("fullScreenCover"))
+            AnyView(Text("fullScreenCover"))
         }
     }
 }

@@ -1,11 +1,15 @@
 import Foundation
 import SwiftUI
+import AppNavigationKit
+import SpamKit
 
 enum Home2Route: AnyIdentifiable {
     case start
     case pushScreen
     case presentScreen
     case fullScreenCover
+
+    case spam
 
     func getView(_ coordinator: AppCoordinator) -> AnyView {
         // TODO: call another module compose
@@ -19,6 +23,8 @@ enum Home2Route: AnyIdentifiable {
             AnyView(Text("presentScreen"))
         case .fullScreenCover:
             AnyView(Text("fullScreenCover"))
+        case .spam:
+            AnyView(SpamHomeBuilder.setup(coordinator: coordinator))
         }
     }
 }

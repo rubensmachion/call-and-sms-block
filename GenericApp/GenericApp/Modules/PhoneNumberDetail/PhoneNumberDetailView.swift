@@ -1,4 +1,5 @@
 import SwiftUI
+import AppNavigationKit
 
 struct PhoneNumberDetailView: View {
     @EnvironmentObject var appCoordinator: AppCoordinator

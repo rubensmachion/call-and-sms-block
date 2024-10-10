@@ -1,4 +1,5 @@
 import Foundation
+import AppNavigationKit
 
 protocol SettingsCoordinatorProtocol {
     func pushSomeScreen()

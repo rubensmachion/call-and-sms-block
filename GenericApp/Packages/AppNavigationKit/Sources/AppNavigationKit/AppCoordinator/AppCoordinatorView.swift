@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct AppCoordinatorView: View {
+public struct AppCoordinatorView: View {
     @StateObject var appCoordinator = AppCoordinator()
 
     private let startOn: any AnyIdentifiable
 
-    init(startOn: any AnyIdentifiable) {
+    public init(startOn: any AnyIdentifiable) {
         self.startOn = startOn
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack(path: $appCoordinator.path) {
             appCoordinator.build(AnyScreen(startOn))
                 .navigationDestination(for: AnyScreen.self) { screen in

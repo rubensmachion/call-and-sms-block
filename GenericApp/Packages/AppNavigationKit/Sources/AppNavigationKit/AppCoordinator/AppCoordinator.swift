@@ -4,44 +4,44 @@ open class AppCoordinator: AppCoordinatorProtocol {
     
     // MARK: - Properties
 
-    @Published var path: NavigationPath = .init()
-    @Published var sheet: AnyScreen?
-    @Published var fullScreenCover: AnyScreen?
+    @Published public var path: NavigationPath = .init()
+    @Published public var sheet: AnyScreen?
+    @Published public var fullScreenCover: AnyScreen?
 
     // MARK: - Navigation
 
-    func push(_ screen: any AnyIdentifiable) {
+    public func push(_ screen: any AnyIdentifiable) {
         path.append(AnyScreen(screen))
     }
     
-    func presentSheet(_ sheet: any AnyIdentifiable) {
+    public func presentSheet(_ sheet: any AnyIdentifiable) {
         self.sheet = AnyScreen(sheet)
     }
     
-    func presentFullScreenCover(_ fullScreenCover: any AnyIdentifiable) {
+    public func presentFullScreenCover(_ fullScreenCover: any AnyIdentifiable) {
         self.fullScreenCover = AnyScreen(fullScreenCover)
     }
     
-    func pop() {
+    public func pop() {
         path.removeLast()
     }
     
-    func popToRoot() {
+    public func popToRoot() {
         path.removeLast(path.count)
     }
     
-    func dismissSheet() {
+    public func dismissSheet() {
         self.sheet = nil
     }
     
-    func dismissFullScreenOver() {
+    public func dismissFullScreenOver() {
         self.fullScreenCover = nil
     }
 
     // MARK: - ViewBuilder
 
     @ViewBuilder
-    func build(_ screen: AnyScreen) -> some View {
+    public func build(_ screen: AnyScreen) -> some View {
         screen.getView(self)
     }
  }

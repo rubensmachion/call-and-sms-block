@@ -1,4 +1,5 @@
 import SwiftUI
+import AppNavigationKit
 import CallKit
 
 @main

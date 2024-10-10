@@ -6,6 +6,10 @@ options:
   deploymentTarget:
     iOS: 16.0
 
+localPackages:
+  - Packages/SpamKit
+  - Packages/AppNavigationKit
+
 packages:
   PhoneNumberKit:
     url: https://github.com/marmelroy/PhoneNumberKit
@@ -216,6 +220,8 @@ targets:
         embed: true
       - target: CallDirectory
         embed: true
+      - package: SpamKit
+      - package: AppNavigationKit
 
 
 schemes:

@@ -1,15 +1,15 @@
 import SwiftUI
 import AppNavigationKit
 
-struct SettingsView: View {
+public struct SpamHomeView: View {
     @EnvironmentObject var appCoordinator: AppCoordinator
-    @ObservedObject var viewModel: SettingsViewModel
+    @ObservedObject var viewModel: SpamHomeViewModel
 
-    init(viewModel: SettingsViewModel) {
+    init(viewModel: SpamHomeViewModel) {
         self.viewModel = viewModel
     }
 
-    var body: some View {
+    public var body: some View {
         buildContent()
             .navigationTitle("Some Screen")
     }
@@ -28,5 +28,5 @@ struct SettingsView: View {
 }
 
 //#Preview {
-//    SettingsBuilder.setup(coordinator: AppCoordinator())
+//    SpamHomeBuilder.setup(coordinator: AppCoordinator())
 //}

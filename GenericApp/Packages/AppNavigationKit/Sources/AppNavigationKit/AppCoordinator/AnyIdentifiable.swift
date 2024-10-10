@@ -1,11 +1,11 @@
 import SwiftUI
 import Foundation
 
-protocol AnyIdentifiable: Identifiable, Hashable {
+public protocol AnyIdentifiable: Identifiable, Hashable {
     func getView(_ coordinator: AppCoordinator) -> AnyView
 }
 
-extension AnyIdentifiable {
+public extension AnyIdentifiable {
     var id: ObjectIdentifier {
         return ObjectIdentifier(Self.self)
     }
