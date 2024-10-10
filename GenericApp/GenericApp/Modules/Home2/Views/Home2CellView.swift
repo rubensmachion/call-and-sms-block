@@ -15,13 +15,26 @@ struct Home2CellView: View {
                 .frame(minHeight: 100.0)
                 .cornerRadius(12.0)
             VStack(alignment: .leading, spacing: 8.0) {
-                Image(systemName: item.icon)
+                HStack {
+                    Image(systemName: item.icon)
+                    Spacer()
+                    Text(item.status.0)
+                        .padding(.leading, 8.0)
+                        .padding(.trailing, 8.0)
+                        .padding(.top, 4.0)
+                        .padding(.bottom, 4.0)
+                        .frame(alignment: .center)
+                        .background(item.status.1)
+                        .cornerRadius(8.0)
+                        .foregroundColor(.white)
+                }
                 Text(item.title)
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.primary)
                 Text(item.subtitle)
                     .font(.system(size: 17, weight: .regular))
                     .foregroundColor(.gray)
+                Spacer()
             }
             .padding()
         }
@@ -29,5 +42,5 @@ struct Home2CellView: View {
 }
 
 #Preview {
-    Home2CellView(item: .bitcoinWallet)
+    Home2CellView(item: .spam)
 }
