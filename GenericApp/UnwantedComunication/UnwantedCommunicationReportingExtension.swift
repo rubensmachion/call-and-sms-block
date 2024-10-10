@@ -15,7 +15,6 @@ class UnwantedCommunicationReportingExtension: ILClassificationUIExtensionViewCo
         self.extensionContext.isReadyForClassificationResponse = true
     }
 
-    // Customize UI based on the classification request before the view is loaded
     override func prepare(for classificationRequest: ILClassificationRequest) {
         // Configure your views for the classification request
         if let call = classificationRequest as? ILCallClassificationRequest,
@@ -34,42 +33,30 @@ class UnwantedCommunicationReportingExtension: ILClassificationUIExtensionViewCo
         }
     }
 
-
-    // Provide a classification response for the classification request
     override func classificationResponse(for request:ILClassificationRequest) -> ILClassificationResponse {
+
+        var payload: [String: AnyHashable] = [
+            "description": "Spam Generic App"
+        ]
 
         if let call = request as? ILCallClassificationRequest,
            let sender = call.callCommunications.last?.sender {
-            let payload: [String: AnyHashable] = [
-                "number": sender,
-                "type": "PHONE_CALL",
-                "identification": "Spam",
-                "classification": 0
-            ]
-
-            let action: ILClassificationAction = .reportJunk  // or .none, .reportNotJunk, .reportJunkAndBlockSender
-            let response = ILClassificationResponse(action: action)
-            response.userInfo = payload
-
-            return response
+            payload["number"] = sender
+            payload["type"] = "PHONE_CALL"
 
         } else if let message = request as? ILMessageClassificationRequest,
                   let sender = message.messageCommunications.last?.sender {
-            let payload: [String: AnyHashable] = [
-                "number": sender,
-                "type": "TEXT",
-                "identification": "Spam",
-                "classification": 0
-            ]
-
-            let action: ILClassificationAction = .reportJunk  // or .none, .reportNotJunk, .reportJunkAndBlockSender
+            payload["number"] = sender
+            payload["type"] = "TEXT"
+        }
+        if payload["number"] != nil {
+            let action: ILClassificationAction = .reportJunk
             let response = ILClassificationResponse(action: action)
             response.userInfo = payload
 
             return response
         } else {
-            return ILClassificationResponse(action: .none)
+            return .init(action: .none)
         }
-        //        return ILClassificationResponse(action: .none)
     }
 }
