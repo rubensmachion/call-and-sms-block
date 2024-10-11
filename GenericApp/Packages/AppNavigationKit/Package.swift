@@ -11,9 +11,15 @@ let package = Package(
             name: "AppNavigationKit",
             targets: ["AppNavigationKit"]),
     ],
+    dependencies: [
+        .package(path: "../UtilKit"),
+    ],
     targets: [
         .target(
-            name: "AppNavigationKit"),
+            name: "AppNavigationKit",
+            dependencies: [
+                "UtilKit"
+            ]),
         .testTarget(
             name: "AppNavigationKitTests",
             dependencies: ["AppNavigationKit"]),

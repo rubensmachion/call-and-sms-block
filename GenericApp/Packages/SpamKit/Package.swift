@@ -12,13 +12,15 @@ let package = Package(
             targets: ["SpamKit"]),
     ],
     dependencies: [
-        .package(path: "../AppNavigationKit")
+        .package(path: "../AppNavigationKit"),
+        .package(path: "../UtilKit"),
     ],
     targets: [
         .target(
             name: "SpamKit",
             dependencies: [
-                "AppNavigationKit"
+                "AppNavigationKit",
+                "UtilKit"
             ]),
         .testTarget(
             name: "SpamKitTests",
