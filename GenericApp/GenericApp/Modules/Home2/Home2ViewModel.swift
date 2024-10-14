@@ -24,7 +24,9 @@ final class Home2ViewModel: Home2ViewModelProtocol {
         isLoading = true
 
         service.fetch { _ in
-            self.isLoading = false
+            DispatchQueue.main.async { [weak self] in
+                self?.isLoading = false
+            }
         }
     }
 
