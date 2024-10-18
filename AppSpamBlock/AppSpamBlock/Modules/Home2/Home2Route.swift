@@ -7,6 +7,7 @@ enum Home2Route: AnyIdentifiable {
     case start
     case spam
     case settings
+    case callDirectoryTutorial
 
     func getView(_ coordinator: AppCoordinator) -> AnyView {        
         switch self {
@@ -16,6 +17,8 @@ enum Home2Route: AnyIdentifiable {
             AnyView(SpamHomeBuilder.setup(coordinator: coordinator))
         case .settings:
             AnyView(SettingsBuilder.setup(coordinator: coordinator))
+        case .callDirectoryTutorial:
+            AnyView(TutorialScreenBuilder.setup(coordinator: coordinator, type: .enableCallDirectory))
         }
     }
 }

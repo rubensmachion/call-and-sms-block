@@ -32,4 +32,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         return true
     }
+
+    func applicaperfo
 }

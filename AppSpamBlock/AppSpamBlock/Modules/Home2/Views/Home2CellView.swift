@@ -29,10 +29,12 @@ struct Home2CellView: View {
                         .foregroundColor(.white)
                 }
                 Text(item.title)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 18, 
+                                  weight: .semibold))
                     .foregroundColor(.primary)
                 Text(item.subtitle)
-                    .font(.system(size: 17, weight: .regular))
+                    .font(.system(size: 17, 
+                                  weight: .regular))
                     .foregroundColor(.gray)
                 Spacer()
             }

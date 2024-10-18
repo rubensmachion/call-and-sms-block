@@ -4,7 +4,7 @@ import AppNavigationKit
 struct Home2View: View {
 
     // MARK: - Properties
-    
+
     @EnvironmentObject var appCoordinator: AppCoordinator
     @ObservedObject var viewModel: Home2ViewModel
 
@@ -21,7 +21,6 @@ struct Home2View: View {
 
     var body: some View {
         buildContent()
-            .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -31,34 +30,38 @@ struct Home2View: View {
                     })
                 }
             }
+            .onAppear(perform: {
+                viewModel.refresh()
+            })
     }
 
     @ViewBuilder
     private func buildContent() -> some View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
-            if viewModel.isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
-            } else {
-                buildCollectionView()
-            }
+            buildCollectionView()
         }
     }
 
     @ViewBuilder
     private func buildCollectionView() -> some View {
         ScrollView {
-            LazyVGrid(columns: columns,
-                      content: {
-                ForEach($viewModel.items) { item in
-                    Home2CellView(item: item.wrappedValue)
-                        .onTapGesture {
-                            viewModel.showOption(item.wrappedValue)
-                        }
-                }
-            })
-            .padding()
+            VStack(spacing: 8.0) {
+                Home2StatusView(status: viewModel.securityStatus)
+                    .onTapGesture {
+                        viewModel.didTapSecurityStatus()
+                    }
+                LazyVGrid(columns: columns,
+                          content: {
+                    ForEach($viewModel.items) { item in
+                        Home2CellView(item: item.wrappedValue)
+                            .onTapGesture {
+                                viewModel.showOption(item.wrappedValue)
+                            }
+                    }
+                })
+                .padding()
+            }
         }
     }
 }
