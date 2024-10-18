@@ -6,6 +6,7 @@ protocol Home2ViewModelProtocol: ObservableObject {
     var isLoading: Bool { get }
 
     func showOption(_ option: Home2Item)
+    func showSettings()
 }
 
 final class Home2ViewModel: Home2ViewModelProtocol {
@@ -32,18 +33,22 @@ final class Home2ViewModel: Home2ViewModelProtocol {
 
     func showOption(_ option: Home2Item) {
         switch option {
-        case .spam:
+        case .block:
             coordinator.showSpamHome()
-        case .bitcoinWallet:
+        case .reportSpam:
             break
-        case .news:
+        case .seach:
             break
-        case .passwords:
-            break
-        case .mfa:
-            break
-        case .vpn:
-            break
+        }
+    }
+
+    func showSettings() {
+        coordinator.showSettings()
+    }
+
+    private func checkCallDirectoryStatus() {
+        AppCallDirectoryProvider.shared.checkStatus { status in
+
         }
     }
 }

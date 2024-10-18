@@ -1,9 +1,17 @@
 import Foundation
 import CallKit
 
+typealias CallDirectoryStatus = CXCallDirectoryManager.EnabledStatus
+
 final class AppCallDirectoryProvider {
-    
+
+    // MARK: - Properties
+
     static let shared = AppCallDirectoryProvider()
+
+    private(set) var status: CallDirectoryStatus = .unknown
+
+    // MARK: - Init
 
     private init() {
         reloadCallDirectory()
@@ -24,12 +32,13 @@ final class AppCallDirectoryProvider {
             })
     }
 
-    func checkStatus() {
+    func checkStatus(completion: ((CallDirectoryStatus) -> Void)? = nil) {
         CXCallDirectoryManager.sharedInstance
             .getEnabledStatusForExtension(withIdentifier: Bundle.main.callDirectoryIdentifier,
-                                          completionHandler: {(enabledStatus, error)  -> Void in
+                                          completionHandler: { [weak self] (enabledStatus, error) -> Void in
                 if let error = error {
                     print("getEnabledStatusForExtension", error.localizedDescription)
+                    completion?(.unknown)
                 }
                 var statusString = ""
                 switch enabledStatus {
@@ -44,7 +53,8 @@ final class AppCallDirectoryProvider {
                 }
                 print("getEnabledStatusForExtension", statusString)
 
-                // TODO: Handle flow when extension disabled
+                self?.status = enabledStatus
+                completion?(enabledStatus)
             })
     }
 }

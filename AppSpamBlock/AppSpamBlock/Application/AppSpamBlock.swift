@@ -1,9 +1,10 @@
 import SwiftUI
 import AppNavigationKit
 import CallKit
+import SpamKit
 
 @main
-struct CallSMSBlockApp: App {
+struct AppSpamBlock: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

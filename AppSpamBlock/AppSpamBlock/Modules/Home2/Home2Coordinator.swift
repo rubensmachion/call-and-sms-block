@@ -2,11 +2,8 @@ import Foundation
 import AppNavigationKit
 
 protocol Home2CoordinatorProtocol {
-    func pushSomeScreen()
-    func presentSomeScreen()
-    func fullScreenCover()
-
     func showSpamHome()
+    func showSettings()
 }
 
 final class Home2Coordinator: Home2CoordinatorProtocol {
@@ -23,19 +20,11 @@ final class Home2Coordinator: Home2CoordinatorProtocol {
 
     // MARK: - Public
 
-    func pushSomeScreen() {
-        appCoordinator.push(Home2Route.pushScreen)
-    }
-
-    func presentSomeScreen() {
-        appCoordinator.presentSheet(Home2Route.presentScreen)
-    }
-
-    func fullScreenCover() {
-        appCoordinator.presentFullScreenCover(Home2Route.fullScreenCover)
-    }
-
     func showSpamHome() {
         appCoordinator.push(Home2Route.spam)
+    }
+
+    func showSettings() {
+        appCoordinator.presentSheet(Home2Route.settings)
     }
 }

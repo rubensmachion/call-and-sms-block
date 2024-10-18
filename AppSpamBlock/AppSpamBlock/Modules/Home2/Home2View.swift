@@ -2,7 +2,9 @@ import SwiftUI
 import AppNavigationKit
 
 struct Home2View: View {
+
     // MARK: - Properties
+    
     @EnvironmentObject var appCoordinator: AppCoordinator
     @ObservedObject var viewModel: Home2ViewModel
 
@@ -20,6 +22,15 @@ struct Home2View: View {
     var body: some View {
         buildContent()
             .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        viewModel.showSettings()
+                    }, label: {
+                        Image(systemName: "gear")
+                    })
+                }
+            }
     }
 
     @ViewBuilder

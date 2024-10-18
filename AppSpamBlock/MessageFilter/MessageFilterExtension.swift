@@ -6,6 +6,7 @@
 //
 
 import IdentityLookup
+import CoreML
 
 final class MessageFilterExtension: ILMessageFilterExtension {}
 
@@ -50,7 +51,7 @@ extension MessageFilterExtension: ILMessageFilterQueryHandling, ILMessageFilterC
 
         switch offlineAction {
         case .allow, .junk, .promotion, .transaction:
-            // Based on offline data, we know this message should either be Allowed, Filtered as Junk, Promotional or Transactional. Send response immediately.
+
             let response = ILMessageFilterQueryResponse()
             response.action = offlineAction
             response.subAction = offlineSubAction
@@ -58,23 +59,6 @@ extension MessageFilterExtension: ILMessageFilterQueryHandling, ILMessageFilterC
             completion(response)
 
         case .none:
-
-            // Based on offline data, we do not know whether this message should be Allowed or Filtered. Defer to network.
-            // Note: Deferring requests to network requires the extension target's Info.plist to contain a key with a URL to use. See documentation for details.
-//            SecRequestSharedWebCredential(nil, nil) { credentials, error in
-//                if let error = error {
-//                    print("\(#function): \(error.localizedDescription)")
-//                } else if let credentials = credentials as? [[String: Any]], let firstCredential = credentials.first {
-//                    let username = firstCredential[kSecAttrAccount as String] as? String
-//                    let password = firstCredential[kSecSharedPassword as String] as? String
-//                    // Use the username and password
-//                    print("username: \(username)")
-//                    print("password: \(password)")
-//
-//
-//                }
-//            }
-
             context.deferQueryRequestToNetwork() { (networkResponse, error) in
                 let response = ILMessageFilterQueryResponse()
                 response.action = .none
@@ -97,7 +81,24 @@ extension MessageFilterExtension: ILMessageFilterQueryHandling, ILMessageFilterC
 
     private func offlineAction(for queryRequest: ILMessageFilterQueryRequest) -> (ILMessageFilterAction, ILMessageFilterSubAction) {
         // TODO: Replace with logic to perform offline check whether to filter first (if possible).
-        return (.none, .none)
+        guard let text = queryRequest.messageBody else { return (.none, .none) }
+        do {
+            let model = try SMS_classification(configuration: MLModelConfiguration())
+
+            let input = SMS_classificationInput(text: text)
+            let prediction = try model.prediction(input: input)
+
+            let predictedLabel = prediction.label
+
+            if predictedLabel == "spam" {
+                return (.junk, .none)
+            }
+
+            return (.none, .none)
+        } catch {
+            print(error)
+            return (.none, .none)
+        }
     }
 
     private func networkAction(for networkResponse: ILNetworkResponse) -> (ILMessageFilterAction, ILMessageFilterSubAction) {

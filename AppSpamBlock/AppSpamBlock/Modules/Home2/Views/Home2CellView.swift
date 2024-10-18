@@ -42,5 +42,5 @@ struct Home2CellView: View {
 }
 
 #Preview {
-    Home2CellView(item: .spam)
+    Home2CellView(item: .block)
 }
