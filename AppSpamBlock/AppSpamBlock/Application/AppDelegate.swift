@@ -1,10 +1,18 @@
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    
+    private lazy var blackListRefresh: AppBackgroundTaskManager = {
+        let bg = AppBackgroundTaskManager(task: .refreshBlackList)
+
+        return bg
+    }()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         _ = AppCallDirectoryProvider.shared
+        
+        _ = blackListRefresh
 
 //        SecRequestSharedWebCredential(nil, nil) { credentials, error in
 //            if let error = error {
@@ -33,5 +41,5 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 
-    func applicaperfo
+
 }

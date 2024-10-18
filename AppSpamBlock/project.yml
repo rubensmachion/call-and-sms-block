@@ -204,6 +204,8 @@ targets:
         UIRequiredDeviceCapabilities: [armv7]
         LSRequiresIPhoneOS: YES
         ENVIRONMENT: $(ENVIRONMENT)
+        BGTaskSchedulerPermittedIdentifiers: [$(TASK_PROCESSING_IDENTIFIER)]
+        UIBackgroundModes: [fetch]
     entitlements:
       path: AppSpamBlock/AppSpamBlock.entitlements
       properties:
