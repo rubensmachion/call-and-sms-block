@@ -8,7 +8,10 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
         context.delegate = self
 
-        addAllBlockingPhoneNumbers(to: context) {
+//        addAllBlockingPhoneNumbers(to: context) {
+//            context.completeRequest()
+//        }
+        addIdenfityPhoneNumbers(to: context) {
             context.completeRequest()
         }
     }
@@ -26,6 +29,25 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                 context.addBlockingEntry(withNextSequentialPhoneNumber: result[index].number)
                 result[index].isBlocked.toggle()
             }
+            do {
+                try dataStore.save()
+            } catch {
+                print("Failed save \(error)")
+            }
+            completion()
+        }
+    }
+
+    private func addIdenfityPhoneNumbers(to context: CXCallDirectoryExtensionContext,
+                                         completion: @escaping () -> Void) {
+        Task {
+            let result: [QuarantineData] = try await dataStore.fetch(predicate: QuarantineData.defaultPredicate())
+            for index in 0..<result.count {
+                context.addIdentificationEntry(withNextSequentialPhoneNumber: result[index].number,
+                                               label: result[index].descrip ?? "-")
+                result[index].imported = true
+            }
+            
             do {
                 try dataStore.save()
             } catch {

@@ -4,6 +4,10 @@ final class DataStore {
 
     let persistentContainer: NSPersistentContainer
 
+    var context: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+
     private(set) lazy var backgroundContext: NSManagedObjectContext = {
         let context = persistentContainer.newBackgroundContext()
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy

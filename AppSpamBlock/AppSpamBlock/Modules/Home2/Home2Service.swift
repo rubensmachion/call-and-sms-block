@@ -38,14 +38,14 @@ final class Home2Service: Home2ServiceProcotol {
     func fetch(lastIndex: Int, limit: Int?, result: @escaping (Bool) -> Void) {
         let route = Home2ServiceRoute.getBlackList(lastIndex: lastIndex, limit: limit)
 
-        network.decodeRequest(config: route.config,
-                              type: [BlackListMode].self) { response in
-            switch response {
-            case .success(let list):
-                result(true)
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        network.decodeRequest(config: route.config,
+//                              type: [BlackListMode].self) { response in
+//            switch response {
+//            case .success(let list):
+//                result(true)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
 }

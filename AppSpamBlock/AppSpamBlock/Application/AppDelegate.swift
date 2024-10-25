@@ -1,45 +1,30 @@
 import UIKit
+import NetworkKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    
-    private lazy var blackListRefresh: AppBackgroundTaskManager = {
-        let bg = AppBackgroundTaskManager(task: .refreshBlackList)
 
+    private lazy var blackListRefresh: IAppBackgroundTaskManager = {
+        let network = NetworkRequest()
+        let service = AppBackgroundRefreshService(network: network)
+        let bg = AppBackgroundTaskManager(service: service)
         return bg
     }()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         _ = AppCallDirectoryProvider.shared
-        
-        _ = blackListRefresh
-
-//        SecRequestSharedWebCredential(nil, nil) { credentials, error in
-//            if let error = error {
-//                print("\(#function): \(error.localizedDescription)")
-//            } else if let credentials = credentials as? [[String: Any]], let firstCredential = credentials.first {
-//                let username = firstCredential[kSecAttrAccount as String] as? String
-//                let password = firstCredential[kSecSharedPassword as String] as? String
-//                // Use the username and password
-//                print("username: \(username)")
-//                print("password: \(password)")
-//            }
-//        }
-
-//        let domain: CFString = "api-dev.callspam.org" as CFString
-//        let account = "rubens.machion" as CFString
-//        let pass = "123456" as CFString
-//
-//        SecAddSharedWebCredential(domain, account, pass) { error in
-//            if let error = error {
-//                print("\(#function): \(error.localizedDescription)")
-//            } else {
-//                print("sucess")
-//            }
-//        }
+        blackListRefresh.forceUpdateBlackList()
+        blackListRefresh.forceUpdateQuarantine()
 
         return true
     }
 
+    func application(_ application: UIApplication,
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 
+        let sceneConfig: UISceneConfiguration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        sceneConfig.delegateClass = SceneDelegate.self
+        return sceneConfig
+    }
 }

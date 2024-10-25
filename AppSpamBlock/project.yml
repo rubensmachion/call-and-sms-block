@@ -98,7 +98,7 @@ targets:
         ENVIRONMENT: $(ENVIRONMENT)
         NSExtension: {
           NSExtensionAttributes: {
-            ILMessageFilterExtensionNetworkURL: "https://api-dev.callspam.org/call-report2"
+            ILMessageFilterExtensionNetworkURL: "https://api-dev.callspam.org/message-filter"
           },
           NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter",
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
@@ -145,7 +145,7 @@ targets:
         ENVIRONMENT: $(ENVIRONMENT)
         NSExtension: {
           NSExtensionAttributes: {
-            ILClassificationExtensionNetworkReportDestination: "https://api-dev.callspam.org/call-report2"
+            ILClassificationExtensionNetworkReportDestination: "https://api-dev.callspam.org/report"
           },
           NSExtensionPointIdentifier: "com.apple.identitylookup.classification-ui",
           NSExtensionMainStoryboard: "MainInterface"

@@ -14,7 +14,7 @@ public enum MapperResultError: Error {
     case error(error: RequestError)
 }
 
-public extension NetworkRequest {
+public extension INetworkRequest {
 
     private func defaultMapper<T>(data: Data, to type: T.Type) -> MapperResult<T> {
         do {

@@ -12,7 +12,11 @@ public enum RequestError: Error {
     case error(message: String)
 }
 
-public final class NetworkRequest {
+public protocol INetworkRequest {
+    func request(with config: IRequestConfig, completion: @escaping (RequestResult) -> Void)
+}
+
+public final class NetworkRequest: INetworkRequest {
 
     private let session: URLSession
 
