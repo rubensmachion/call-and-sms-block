@@ -11,7 +11,7 @@ class BlockNumberData: NSManagedObject, ManagedDataProtocol, Identifiable {
     @NSManaged var date: Date
 
     convenience init(dataStore: DataStore) {
-        self.init(context: dataStore.persistentContainer.viewContext)
+        self.init(context: dataStore.context)
     }
 
     static func ascendingdateSortDescriptor() -> [NSSortDescriptor] {

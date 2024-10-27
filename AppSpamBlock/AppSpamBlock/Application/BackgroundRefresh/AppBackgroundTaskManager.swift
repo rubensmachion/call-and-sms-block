@@ -1,27 +1,35 @@
-import Foundation
+import UIKit
 import BackgroundTasks
 
 protocol IAppBackgroundTaskManager {
     func forceUpdateBlackList()
     func forceUpdateQuarantine()
+    func forceUpdateAll()
 }
 
 final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
-    
+
     // MARK: - Properties
-    
+
     private var taskIdentifier: String? {
         if let list = Bundle.main.infoDictionary?["BGTaskSchedulerPermittedIdentifiers"] as? [String] {
             return list.first
         }
         return nil
     }
-    
-    private let service: AppBackgroundRefreshServiceProcotol
-    
-    private let dataStore = DataStore()
 
-    private static var LIMIT = 500
+    private let service: AppBackgroundRefreshServiceProcotol
+    private let dataStore = DataStore()
+    private var isInForeground = false
+    private var limitOffSet: Int {
+        return isInForeground ? 500 : 100
+    }
+
+    private let notificationsName: [Notification.Name] = [
+        UIApplication.didEnterBackgroundNotification,
+        UIApplication.willTerminateNotification,
+        UIApplication.didBecomeActiveNotification
+    ]
 
     // MARK: - Init
 
@@ -37,6 +45,34 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
 
         scheduleTask(identifier: taskIdentifier)
+        createNotification()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    private func createNotification() {
+        notificationsName.forEach { name in
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(receiveNotification(_:)),
+                                                   name: name,
+                                                   object: nil)
+        }
+    }
+
+    @objc private func receiveNotification(_ notif: Notification) {
+        print("Received:", notif.name)
+        isInForeground = notif.name == UIApplication.didBecomeActiveNotification
+
+        switch notif.name {
+        case UIApplication.didEnterBackgroundNotification, 
+            UIApplication.willTerminateNotification,
+            UIApplication.didBecomeActiveNotification:
+            updateAll()
+        default:
+            break
+        }
     }
 
     private func scheduleTask(identifier: String) {
@@ -78,25 +114,58 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
+    func forceUpdateAll() {
+        updateAll { success in
+            if success { AppCallDirectoryProvider.shared.reloadCallDirectory() }
+        }
+    }
+
     // MARK: - Private
 
     private func handleTask(_ task: BGTask) {
         print(task)
+
         scheduleTask(identifier: task.identifier)
+
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
         }
 
-//        let operationBlackList = OperationQueue()
-//
-//        operationBlackList.addOperation {
-//            updateBlackList { [weak self ] success1 in
-//
-//            }
-//        }
+        updateAll { success in
+            task.setTaskCompleted(success: success)
+        }
+    }
 
-        updateQuarantine { result in
-            task.setTaskCompleted(success: result)
+    private func updateAll(completion: ((Bool) -> Void)? = nil) {
+        let operationQueue = OperationQueue()
+        let dispatchGroup = DispatchGroup()
+
+        var result: Bool?
+        let blockResult: (Bool) -> Void = { success in
+            guard let oldResult = result else {
+                result = success
+                return
+            }
+            result = success || oldResult
+            dispatchGroup.leave()
+        }
+
+        dispatchGroup.enter()
+        operationQueue.addOperation { [weak self] in
+            self?.updateBlackList { success in
+                blockResult(success)
+            }
+        }
+
+        dispatchGroup.enter()
+        operationQueue.addOperation { [weak self] in
+            self?.updateQuarantine { success in
+                blockResult(success)
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            completion?(result ?? false)
         }
     }
 
@@ -107,7 +176,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
                 let lastIndex = result?.last?.id ?? .zero
 
-                service.fetchBlackList(lastIndex: lastIndex, limit: AppBackgroundTaskManager.LIMIT) { [weak self] result in
+                service.fetchBlackList(lastIndex: lastIndex,
+                                       limit: limitOffSet) { [weak self] result in
                     guard let self = self else { return }
                     switch result {
                     case .success(let list):
@@ -122,7 +192,9 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
-    private func persistBlackList(list: [BlackListModel]) -> Bool {
+    private func persistBlackList(list: [BlackListAndReportResponse]) -> Bool {
+        if list.isEmpty { return false }
+
         _ = list.map { [weak self] item in
             guard let self = self else { return }
             let quarantine = BlackListData(context: self.dataStore.context)
@@ -131,7 +203,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
             quarantine.number = Int64(item.number) ?? .zero
         }
         do {
-            try self.dataStore.save(context: self.dataStore.context)
+            try self.dataStore.save(context: dataStore.context)
 
             return true
         } catch {
@@ -146,7 +218,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
                 let lastIndex = result?.last?.id ?? .zero
 
-                service.fetchQuarantine(lastIndex: lastIndex, limit: AppBackgroundTaskManager.LIMIT) { [weak self] result in
+                service.fetchQuarantine(lastIndex: lastIndex,
+                                        limit: limitOffSet) { [weak self] result in
                     switch result {
                     case .success(let list):
                         let response = self?.persistQuarantine(list: list) ?? false
@@ -160,7 +233,9 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
-    private func persistQuarantine(list: [BlackListModel]) -> Bool {
+    private func persistQuarantine(list: [BlackListAndReportResponse]) -> Bool {
+        if list.isEmpty { return false }
+
         _ = list.map { [weak self] item in
             guard let self = self else { return }
             let quarantine = QuarantineData(context: self.dataStore.context)
@@ -170,7 +245,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
             quarantine.number = Int64(item.number) ?? .zero
         }
         do {
-            try self.dataStore.save(context: self.dataStore.persistentContainer.viewContext)
+            try self.dataStore.save(context: dataStore.context)
 
             return true
         } catch {

@@ -37,7 +37,7 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
             let range = from...to
             Task {
                 _ = await saveRangeNumber(name: name, range: range)
-                AppCallDirectoryProvider.shared.reloadCallDirectory()
+//                AppCallDirectoryProvider.shared.reloadCallDirectory()
             }
             isSuccess = true
         } else {
@@ -65,11 +65,12 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
     }
 
     // MARK: - Private
+    
     private func saveRangeNumber(name: String?, range: ClosedRange<Int>) async -> Bool {
         let group = BlockNumberGroup(dataStore: dataStore)
 
         _ = range.map { number in
-            let data = BlockNumberData(context: dataStore.persistentContainer.viewContext)
+            let data = BlockNumberData(context: dataStore.context)
             data.id = UUID().uuidString
             data.name = name
             data.number = Int64(number)
@@ -101,7 +102,7 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
         let group = BlockNumberGroup(dataStore: dataStore)
 
         do {
-            let data = BlockNumberData(context: dataStore.persistentContainer.viewContext)
+            let data = BlockNumberData(context: dataStore.context)
             data.id = UUID().uuidString
             data.name = name
             data.number = Int64(number)
@@ -118,7 +119,7 @@ final class PhoneNumberViewModel: PhoneNumberViewModelProtocol {
             group.createdDate = Date()
 
             try dataStore.save()
-            AppCallDirectoryProvider.shared.reloadCallDirectory()
+//            AppCallDirectoryProvider.shared.reloadCallDirectory()
             return true
         } catch {
             // TODO: Handle error

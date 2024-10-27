@@ -8,7 +8,7 @@ protocol ManagedDataProtocol: NSManagedObject {
 
 extension ManagedDataProtocol {
     static func defaultPredicate() -> NSPredicate {
-        NSPredicate()
+        NSPredicate(format: "blocked == false")
     }
 
     static func customPredicate(format: String, format predicateFormat: String, _ args: CVarArg...) -> NSPredicate {

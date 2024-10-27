@@ -2,7 +2,7 @@ import CoreData
 
 final class DataStore {
 
-    let persistentContainer: NSPersistentContainer
+    private let persistentContainer: NSPersistentContainer
 
     var context: NSManagedObjectContext {
         return persistentContainer.viewContext
@@ -47,5 +47,15 @@ final class DataStore {
         if newContext?.hasChanges ?? false {
             try newContext?.save()
         }
+    }
+
+    func printList(_ list: [NSManagedObject]) {
+#if DEBUG
+        print("----------------------------------------------")
+        list.forEach { obj in
+            print(obj.description)
+        }
+        print("----------------------------------------------")
+#endif
     }
 }

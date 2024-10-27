@@ -20,8 +20,8 @@ final class AppCallDirectoryProvider {
     func reloadCallDirectory() {
         CXCallDirectoryManager.sharedInstance.reloadExtension (
             withIdentifier: Bundle.main.callDirectoryIdentifier,
-            completionHandler: {(error) -> Void in
-                print("reloadExtension")
+            completionHandler: { (error) -> Void in
+                print("Reloading CallDirectory")
                 if let error = error {
                     print(error.localizedDescription)
                     // reloadExtension The operation couldn’t be completed. (com.apple.CallKit.error.calldirectorymanager error 6.)
@@ -39,6 +39,7 @@ final class AppCallDirectoryProvider {
                 if let error = error {
                     print("getEnabledStatusForExtension", error.localizedDescription)
                     completion?(.unknown)
+                    return
                 }
                 var statusString = ""
                 switch enabledStatus {
@@ -51,7 +52,7 @@ final class AppCallDirectoryProvider {
                 default:
                     statusString = "none"
                 }
-                print("getEnabledStatusForExtension", statusString)
+                print("CallDirectory:", statusString)
 
                 self?.status = enabledStatus
                 completion?(enabledStatus)

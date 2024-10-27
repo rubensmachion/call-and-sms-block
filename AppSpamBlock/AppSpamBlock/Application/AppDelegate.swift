@@ -13,8 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         _ = AppCallDirectoryProvider.shared
-        blackListRefresh.forceUpdateBlackList()
-        blackListRefresh.forceUpdateQuarantine()
+        _ = blackListRefresh
 
         return true
     }

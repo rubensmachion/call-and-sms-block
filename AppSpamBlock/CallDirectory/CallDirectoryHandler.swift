@@ -8,10 +8,24 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
         context.delegate = self
 
-//        addAllBlockingPhoneNumbers(to: context) {
-//            context.completeRequest()
-//        }
-        addIdenfityPhoneNumbers(to: context) {
+        let dispatchGroup = DispatchGroup()
+        let operationQueue = OperationQueue()
+
+        dispatchGroup.enter()
+        operationQueue.addOperation { [weak self] in
+            self?.addAllBlockingPhoneNumbers(to: context) {
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.enter()
+        operationQueue.addOperation { [weak self] in
+            self?.addIdenfityPhoneNumbers(to: context) {
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
             context.completeRequest()
         }
     }
@@ -19,7 +33,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext, 
                                             completion: @escaping () -> Void) {
         Task {
-            let result: [BlockNumberData] = try await dataStore.fetch(predicate: BlockNumberData.defaultPredicate())
+            let result: [BlackListData] = try await dataStore.fetch(predicate: BlackListData.defaultPredicate())
             guard !result.isEmpty else {
                 completion()
                 return
@@ -27,8 +41,9 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
 
             for index in 0..<result.count {
                 context.addBlockingEntry(withNextSequentialPhoneNumber: result[index].number)
-                result[index].isBlocked.toggle()
+                result[index].blocked = true
             }
+
             do {
                 try dataStore.save()
             } catch {
@@ -42,12 +57,17 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                          completion: @escaping () -> Void) {
         Task {
             let result: [QuarantineData] = try await dataStore.fetch(predicate: QuarantineData.defaultPredicate())
+            guard !result.isEmpty else {
+                completion()
+                return
+            }
+
             for index in 0..<result.count {
                 context.addIdentificationEntry(withNextSequentialPhoneNumber: result[index].number,
                                                label: result[index].descrip ?? "-")
                 result[index].imported = true
             }
-            
+
             do {
                 try dataStore.save()
             } catch {
@@ -61,13 +81,6 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
 extension CallDirectoryHandler: CXCallDirectoryExtensionContextDelegate {
 
     func requestFailed(for extensionContext: CXCallDirectoryExtensionContext, withError error: Error) {
-        // An error occurred while adding blocking or identification entries, check the NSError for details.
-        // For Call Directory error codes, see the CXErrorCodeCallDirectoryManagerError enum in <CallKit/CXError.h>.
-        //
-        // This may be used to store the error details in a location accessible by the extension's containing app, so that the
-        // app may be notified about errors which occurred while loading data even if the request to load data was initiated by
-        // the user in Settings instead of via the app itself.
         print(error)
     }
-
 }
