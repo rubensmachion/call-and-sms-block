@@ -69,7 +69,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         case UIApplication.didEnterBackgroundNotification, 
             UIApplication.willTerminateNotification,
             UIApplication.didBecomeActiveNotification:
-            updateAll()
+            forceUpdateAll()
         default:
             break
         }
@@ -172,7 +172,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     private func updateBlackList(completion: ((Bool) -> Void)? = nil) {
         Task {
             do {
-                let result: [BlackListData]? = try await dataStore.fetch(sortDescriptors: BlackListData.ascendingdateSortDescriptor())
+                let result: [BlackListData]? = try await dataStore.fetch(sortDescriptors: BlackListData.ascendingdateSortDescriptor(),
+                                                                         context: dataStore.backgroundContext)
 
                 let lastIndex = result?.last?.id ?? .zero
 
@@ -197,13 +198,13 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
         _ = list.map { [weak self] item in
             guard let self = self else { return }
-            let quarantine = BlackListData(context: self.dataStore.context)
+            let quarantine = BlackListData(context: self.dataStore.backgroundContext)
             quarantine.id = Int64(item.id)
             quarantine.date = Date()
             quarantine.number = Int64(item.number) ?? .zero
         }
         do {
-            try self.dataStore.save(context: dataStore.context)
+            try self.dataStore.save(context: dataStore.backgroundContext)
 
             return true
         } catch {
@@ -214,7 +215,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     private func updateQuarantine(completion: ((Bool) -> Void)? = nil) {
         Task {
             do {
-                let result: [QuarantineData]? = try await dataStore.fetch(sortDescriptors: QuarantineData.ascendingdateSortDescriptor())
+                let result: [QuarantineData]? = try await dataStore.fetch(sortDescriptors: QuarantineData.ascendingdateSortDescriptor(),
+                                                                          context: dataStore.backgroundContext)
 
                 let lastIndex = result?.last?.id ?? .zero
 
@@ -238,14 +240,14 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
         _ = list.map { [weak self] item in
             guard let self = self else { return }
-            let quarantine = QuarantineData(context: self.dataStore.context)
+            let quarantine = QuarantineData(context: self.dataStore.backgroundContext)
             quarantine.id = Int64(item.id)
             quarantine.date = Date()
             quarantine.descrip = item.description ?? "-"
             quarantine.number = Int64(item.number) ?? .zero
         }
         do {
-            try self.dataStore.save(context: dataStore.context)
+            try self.dataStore.save(context: dataStore.backgroundContext)
 
             return true
         } catch {

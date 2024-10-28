@@ -33,7 +33,8 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext, 
                                             completion: @escaping () -> Void) {
         Task {
-            let result: [BlackListData] = try await dataStore.fetch(predicate: BlackListData.defaultPredicate())
+            let result: [BlackListData] = try await dataStore.fetch(predicate: BlackListData.defaultPredicate(),
+                                                                    context: dataStore.backgroundContext)
             guard !result.isEmpty else {
                 completion()
                 return
@@ -45,7 +46,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
             }
 
             do {
-                try dataStore.save()
+                try dataStore.save(context: dataStore.backgroundContext)
             } catch {
                 print("Failed save \(error)")
             }
@@ -56,7 +57,8 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     private func addIdenfityPhoneNumbers(to context: CXCallDirectoryExtensionContext,
                                          completion: @escaping () -> Void) {
         Task {
-            let result: [QuarantineData] = try await dataStore.fetch(predicate: QuarantineData.defaultPredicate())
+            let result: [QuarantineData] = try await dataStore.fetch(predicate: QuarantineData.defaultPredicate(),
+                                                                     context: dataStore.backgroundContext)
             guard !result.isEmpty else {
                 completion()
                 return
@@ -69,7 +71,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
             }
 
             do {
-                try dataStore.save()
+                try dataStore.save(context: dataStore.backgroundContext)
             } catch {
                 print("Failed save \(error)")
             }

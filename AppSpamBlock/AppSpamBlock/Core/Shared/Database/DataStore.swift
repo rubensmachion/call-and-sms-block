@@ -34,11 +34,12 @@ final class DataStore {
     }
 
     func fetch<T>(sortDescriptors: [NSSortDescriptor]? = nil,
-                  predicate: NSPredicate? = nil) async throws -> [T] where T: NSManagedObject {
+                  predicate: NSPredicate? = nil,
+                  context: NSManagedObjectContext? = nil) async throws -> [T] where T: NSManagedObject {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.sortDescriptors = sortDescriptors
         request.predicate = predicate
-        let result = try persistentContainer.viewContext.fetch(request)
+        let result = try (context?.fetch(request) ?? persistentContainer.viewContext.fetch(request))
         return result
     }
 
