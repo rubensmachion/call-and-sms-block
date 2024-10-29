@@ -59,21 +59,21 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
         Task { // 55 11 98115 9541
             let result: [ContactQuarantineData] = try await dataStore.fetch(predicate: ContactQuarantineData.quarantineUnimportedListPredicate(),
                                                                             context: dataStore.backgroundContext,
-                                                                            fetchLimit: 5)
-            result.forEach { data in
-                print(data.formattedNumber ?? "-")
-            }
+                                                                            fetchLimit: 1)
 
             guard !result.isEmpty else {
                 completion()
                 return
             }
 
+            print("######################################")
             for index in 0..<result.count {
+                print("add: \(result[index].number)")
                 context.addIdentificationEntry(withNextSequentialPhoneNumber: result[index].number,
                                                label: result[index].descrip ?? "-")
                 result[index].imported = true
             }
+            print("######################################")
 
             do {
                 try dataStore.save(context: dataStore.backgroundContext)
