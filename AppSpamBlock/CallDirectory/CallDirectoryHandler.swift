@@ -33,7 +33,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext, 
                                             completion: @escaping () -> Void) {
         Task {
-            let result: [BlackListData] = try await dataStore.fetch(predicate: BlackListData.defaultPredicate(),
+            let result: [ContactQuarantineData] = try await dataStore.fetch(predicate: ContactQuarantineData.blackUnimportedListPredicate(),
                                                                     context: dataStore.backgroundContext)
             guard !result.isEmpty else {
                 completion()
@@ -57,7 +57,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     private func addIdenfityPhoneNumbers(to context: CXCallDirectoryExtensionContext,
                                          completion: @escaping () -> Void) {
         Task {
-            let result: [QuarantineData] = try await dataStore.fetch(predicate: QuarantineData.defaultPredicate(),
+            let result: [ContactQuarantineData] = try await dataStore.fetch(predicate: ContactQuarantineData.quarantineUnimportedListPredicate(),
                                                                      context: dataStore.backgroundContext)
             guard !result.isEmpty else {
                 completion()

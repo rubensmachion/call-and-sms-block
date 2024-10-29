@@ -5,6 +5,7 @@ protocol Home2CoordinatorProtocol {
     func showSpamHome()
     func showSettings()
     func showCallDirectoryTutorial()
+    func showReportList()
 }
 
 final class Home2Coordinator: Home2CoordinatorProtocol {
@@ -26,10 +27,14 @@ final class Home2Coordinator: Home2CoordinatorProtocol {
     }
 
     func showSettings() {
-        appCoordinator.presentSheet(Home2Route.settings)
+        appCoordinator.push(Home2Route.settings)
     }
 
     func showCallDirectoryTutorial() {
         appCoordinator.presentSheet(Home2Route.callDirectoryTutorial)
+    }
+
+    func showReportList() {
+        appCoordinator.push(Home2Route.reportList)
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 import PhoneNumberKit
 
-extension Int {
+public extension Int {
 
     private var utility: PhoneNumberUtility {
         return PhoneNumberUtility()
@@ -19,8 +19,7 @@ extension Int {
     }
 }
 
-extension Int64 {
-
+public extension Int64 {
     private var utility: PhoneNumberUtility {
         return PhoneNumberUtility()
     }
@@ -30,7 +29,7 @@ extension Int64 {
             let phoneNumber = try utility.parse("\(self)")
             return utility.format(phoneNumber, toType: .national)
         } catch {
-            print(error.localizedDescription)
+            print(error.localizedDescription + ": \(self)")
         }
 
         return nil

@@ -45,7 +45,7 @@ final class Home2ViewModel: Home2ViewModelProtocol {
         case .block:
             coordinator.showSpamHome()
         case .reportSpam:
-            break
+            coordinator.showReportList()
         case .seach:
             break
         }

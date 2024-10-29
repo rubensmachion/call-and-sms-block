@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23H124" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="BlackListData" representedClassName=".BlackListData" syncable="YES">
-        <attribute name="blocked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="number" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-    </entity>
     <entity name="BlockNumberData" representedClassName=".BlockNumberData" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="String"/>
@@ -22,11 +16,19 @@
         <attribute name="title" attributeType="String"/>
         <relationship name="numbers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BlockNumberData"/>
     </entity>
-    <entity name="QuarantineData" representedClassName=".QuarantineData" syncable="YES">
+    <entity name="ContactQuarantineData" representedClassName=".ContactQuarantineData" syncable="YES">
+        <attribute name="blocked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="contactType" optional="YES" attributeType="String"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="descrip" attributeType="String"/>
+        <attribute name="descrip" optional="YES" attributeType="String"/>
+        <attribute name="formattedNumber" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="imported" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="number" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="number"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
 </model>

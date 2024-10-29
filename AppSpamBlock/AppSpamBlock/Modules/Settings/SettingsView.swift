@@ -11,22 +11,20 @@ struct SettingsView: View {
 
     var body: some View {
         buildContent()
-            .navigationTitle("Some Screen")
+            .navigationTitle("Settings")
     }
 
     @ViewBuilder
     private func buildContent() -> some View {
-        if viewModel.isLoading {
-            ProgressView()
-                .progressViewStyle(.circular)
-        } else {
-            VStack {
-                Text("Loaded")
+        List {
+            ForEach(viewModel.menu.keys.sorted(), id: \.self) { cat in
+                Section(header: Text(cat)) {
+                    ForEach(viewModel.menu[cat] ?? []) { item in
+                        Text(item.item.title)
+                    }
+                }
             }
         }
+        .listStyle(.insetGrouped)
     }
 }
-
-//#Preview {
-//    SettingsBuilder.setup(coordinator: AppCoordinator())
-//}

@@ -35,10 +35,18 @@ final class DataStore {
 
     func fetch<T>(sortDescriptors: [NSSortDescriptor]? = nil,
                   predicate: NSPredicate? = nil,
-                  context: NSManagedObjectContext? = nil) async throws -> [T] where T: NSManagedObject {
+                  context: NSManagedObjectContext? = nil,
+                  fetchLimit: Int? = nil,
+                  offset: Int? = nil) async throws -> [T] where T: NSManagedObject {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.sortDescriptors = sortDescriptors
         request.predicate = predicate
+        if let fetchLimit = fetchLimit {
+            request.fetchLimit = fetchLimit
+        }
+        if let offset = offset {
+            request.fetchOffset = offset
+        }
         let result = try (context?.fetch(request) ?? persistentContainer.viewContext.fetch(request))
         return result
     }

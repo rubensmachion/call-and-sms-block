@@ -21,7 +21,7 @@ struct TutorialScreenView: View {
                 .progressViewStyle(.circular)
         } else {
             VStack {
-                Text("Loaded")
+                Text("Tutorial settings")
             }
         }
     }

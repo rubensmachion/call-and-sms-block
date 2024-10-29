@@ -10,6 +10,10 @@ open class AppCoordinator: AppCoordinatorProtocol {
 
     // MARK: - Navigation
 
+    public static func appCoodinator() -> AppCoordinator {
+        AppCoordinator()
+    }
+
     public func push(_ screen: any AnyIdentifiable) {
         path.append(AnyScreen(screen))
     }

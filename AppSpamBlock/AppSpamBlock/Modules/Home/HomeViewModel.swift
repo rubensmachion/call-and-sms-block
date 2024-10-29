@@ -29,7 +29,6 @@ final class HomeViewModel: HomeViewModelProtocol {
         self.coordinator = coordinator
 
         reloadData(filter: nil)
-//        ConnectionTest().sendResponse()
     }
 
     func reloadData(filter text: String?) {
