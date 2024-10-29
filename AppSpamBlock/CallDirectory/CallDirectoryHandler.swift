@@ -11,12 +11,12 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
         let dispatchGroup = DispatchGroup()
         let operationQueue = OperationQueue()
 
-        dispatchGroup.enter()
-        operationQueue.addOperation { [weak self] in
-            self?.addAllBlockingPhoneNumbers(to: context) {
-                dispatchGroup.leave()
-            }
-        }
+//        dispatchGroup.enter()
+//        operationQueue.addOperation { [weak self] in
+//            self?.addAllBlockingPhoneNumbers(to: context) {
+//                dispatchGroup.leave()
+//            }
+//        }
 
         dispatchGroup.enter()
         operationQueue.addOperation { [weak self] in
@@ -56,9 +56,14 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
 
     private func addIdenfityPhoneNumbers(to context: CXCallDirectoryExtensionContext,
                                          completion: @escaping () -> Void) {
-        Task {
+        Task { // 55 11 98115 9541
             let result: [ContactQuarantineData] = try await dataStore.fetch(predicate: ContactQuarantineData.quarantineUnimportedListPredicate(),
-                                                                     context: dataStore.backgroundContext)
+                                                                            context: dataStore.backgroundContext,
+                                                                            fetchLimit: 5)
+            result.forEach { data in
+                print(data.formattedNumber ?? "-")
+            }
+
             guard !result.isEmpty else {
                 completion()
                 return

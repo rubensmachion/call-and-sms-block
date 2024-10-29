@@ -53,7 +53,7 @@ class ContactQuarantineData: NSManagedObject, ManagedDataProtocol, Identifiable,
     }
 
     static func quarantineUnimportedListPredicate() -> NSPredicate {
-        NSPredicate(format: "imported == %@", false)
+        NSPredicate(format: "imported == false")
     }
 
     override var description: String {
