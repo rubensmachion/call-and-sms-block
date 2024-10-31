@@ -9,53 +9,57 @@ final class AppCallDirectoryProvider {
 
     static let shared = AppCallDirectoryProvider()
 
+    private let directoryManager = CXCallDirectoryManager.sharedInstance
+
     private(set) var status: CallDirectoryStatus = .unknown
 
     // MARK: - Init
 
     private init() {
-        reloadCallDirectory()
+        //        reloadCallDirectory()
     }
 
     func reloadCallDirectory() {
-        CXCallDirectoryManager.sharedInstance.reloadExtension (
-            withIdentifier: Bundle.main.callDirectoryIdentifier,
+        print(#function)
+        directoryManager.reloadExtension (
+            withIdentifier: Bundle.main.identificationSpamDirectoryIdentifier,
             completionHandler: { (error) -> Void in
-                print("Reloading CallDirectory")
-                if let error = error {
-                    print(error.localizedDescription)
-                    // reloadExtension The operation couldn’t be completed. (com.apple.CallKit.error.calldirectorymanager error 6.)
-                    //CXErrorCodeCallDirectoryManagerErrorExtensionDisabled = 6
-                    // if get error 6, check Settings / Phone / Call blocking and identification
+                print("Reloading CallDirectory: \(Bundle.main.identificationSpamDirectoryIdentifier)")
+                if let error = error as NSError? {
+                    print("Erro ao carregar a extensão: \(error.localizedDescription), código: \(error.code)")
+                    if error.code == 1 {
+                        print("Erro genérico. Verifique as configurações e tente novamente.")
+                    }
+                } else {
+                    print("Extensão recarregada com sucesso.")
                 }
                 self.checkStatus()
             })
     }
 
     func checkStatus(completion: ((CallDirectoryStatus) -> Void)? = nil) {
-        CXCallDirectoryManager.sharedInstance
-            .getEnabledStatusForExtension(withIdentifier: Bundle.main.callDirectoryIdentifier,
-                                          completionHandler: { [weak self] (enabledStatus, error) -> Void in
-                if let error = error {
-                    print("getEnabledStatusForExtension", error.localizedDescription)
-                    completion?(.unknown)
-                    return
-                }
-                var statusString = ""
-                switch enabledStatus {
-                case .unknown:
-                    statusString = "unknown"
-                case .disabled:
-                    statusString = "disabled"
-                case .enabled:
-                    statusString = "enabled"
-                default:
-                    statusString = "none"
-                }
-                print("CallDirectory:", statusString)
+        directoryManager.getEnabledStatusForExtension(withIdentifier: Bundle.main.identificationSpamDirectoryIdentifier,
+                                                      completionHandler: { [weak self] (enabledStatus, error) -> Void in
+            if let error = error {
+                print("getEnabledStatusForExtension", error.localizedDescription)
+                completion?(.unknown)
+                return
+            }
+            var statusString = ""
+            switch enabledStatus {
+            case .unknown:
+                statusString = "unknown"
+            case .disabled:
+                statusString = "disabled"
+            case .enabled:
+                statusString = "enabled"
+            default:
+                statusString = "none"
+            }
+            print("CallDirectory:", statusString)
 
-                self?.status = enabledStatus
-                completion?(enabledStatus)
-            })
+            self?.status = enabledStatus
+            completion?(enabledStatus)
+        })
     }
 }

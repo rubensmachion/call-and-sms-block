@@ -23,14 +23,14 @@ configs:
 
 targets:
   ################################
-  # Call Directory extension
+  # IdenficationSpam extension
   ################################
-  CallDirectory:
+  IdenficationSpam:
     type: app-extension
     platform: iOS
     configFiles:
-      Development: CallDirectory/Config/dev.xcconfig
-      Production: CallDirectory/Config/dev.xcconfig
+      Development: IdenficationSpam/Config/dev.xcconfig
+      Production: IdenficationSpam/Config/dev.xcconfig
     settings:
       TARGETED_DEVICE_FAMILY: 1
       ONLY_ACTIVE_ARCH: YES
@@ -43,9 +43,9 @@ targets:
       CURRENT_PROJECT_VERSION: $(CURRENT_PROJECT_VERSION)
       OTHER_LDFLAGS: ["$(inherited)", -ObjC]
       FRAMEWORK_SEARCH_PATHS: ["$(inherited)", "$(PROJECT_DIR)"]
-    sources: [CallDirectory, AppSpamBlock/Core/Shared]
+    sources: [IdenficationSpam, AppSpamBlock/Core/Shared]
     info:
-      path: CallDirectory/Config/Info.plist
+      path: IdenficationSpam/Config/Info.plist
       properties:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
@@ -60,7 +60,53 @@ targets:
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).CallDirectoryHandler"
         }
     entitlements:
-      path: CallDirectory/CallDirectory.entitlements
+      path: IdenficationSpam/IdenficationSpam.entitlements
+      properties:
+        com.apple.security.application-groups: [
+          "group.br.com.test.call.block.CallSMSBlock"
+        ]
+    dependencies:
+      - package: UtilKit
+
+  ################################
+  # BlockSpam extension
+  ################################
+  BlockSpam:
+    type: app-extension
+    platform: iOS
+    configFiles:
+      Development: BlockSpam/Config/dev.xcconfig
+      Production: BlockSpam/Config/dev.xcconfig
+    settings:
+      TARGETED_DEVICE_FAMILY: 1
+      ONLY_ACTIVE_ARCH: YES
+      DEVELOPMENT_TEAM: $(DEVELOPMENT_TEAM)
+      CODE_SIGN_IDENTITY: iPhone Distribution
+      CODE_SIGN_STYLE: Manual
+      PROVISIONING_PROFILE_SPECIFIER: $(PROVISIONING_PROFILE_SPECIFIER)
+      SWIFT_VERSION: $(SWIFT_VERSION)
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+      CURRENT_PROJECT_VERSION: $(CURRENT_PROJECT_VERSION)
+      OTHER_LDFLAGS: ["$(inherited)", -ObjC]
+      FRAMEWORK_SEARCH_PATHS: ["$(inherited)", "$(PROJECT_DIR)"]
+    sources: [BlockSpam, AppSpamBlock/Core/Shared]
+    info:
+      path: BlockSpam/Config/Info.plist
+      properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIdentifier: $(BUNDLE_IDENTIFIER)
+        CFBundleDisplayName: $(PRODUCT_NAME)
+        ENVIRONMENT: $(ENVIRONMENT)
+        NSExtension: {
+          NSExtensionAttributes: {
+            CXCallDirectoryEnabled: YES
+          },
+          NSExtensionPointIdentifier: "com.apple.callkit.call-directory",
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).CallDirectoryHandler"
+        }
+    entitlements:
+      path: BlockSpam/BlockSpam.entitlements
       properties:
         com.apple.security.application-groups: [
           "group.br.com.test.call.block.CallSMSBlock"
@@ -223,7 +269,9 @@ targets:
         embed: true
       - target: MessageFilter
         embed: true
-      - target: CallDirectory
+      - target: IdenficationSpam
+        embed: true
+      - target: BlockSpam
         embed: true
       - package: SpamKit
       - package: AppNavigationKit

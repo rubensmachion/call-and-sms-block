@@ -33,11 +33,11 @@ final class Home2ViewModel: Home2ViewModelProtocol {
 
     func refresh() {
         checkCallDirectoryStatus()
-        guard !isRefreshing else { return }
-        isRefreshing = true
-        service.fetch(lastIndex: 0, limit: 100) { [weak self] _ in
-            self?.isRefreshing = false
-        }
+//        guard !isRefreshing else { return }
+//        isRefreshing = true
+//        service.fetch(lastIndex: 0, limit: 100) { [weak self] _ in
+//            self?.isRefreshing = false
+//        }
     }
 
     func showOption(_ option: Home2Item) {

@@ -2,8 +2,6 @@ import UIKit
 import BackgroundTasks
 
 protocol IAppBackgroundTaskManager {
-    func forceUpdateBlackList()
-    func forceUpdateQuarantine()
     func forceUpdateAll()
 }
 
@@ -21,6 +19,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     private let service: AppBackgroundRefreshServiceProcotol
     private let dataStore = DataStore()
     private var isInForeground = false
+    private var isRefreshing = false
     private var limitOffSet: Int {
         return isInForeground ? 500 : 100
     }
@@ -35,6 +34,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     init(service: AppBackgroundRefreshServiceProcotol) {
         self.service = service
+
         guard let taskIdentifier = taskIdentifier else {
             return
         }
@@ -102,21 +102,30 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
-    func forceUpdateBlackList() {
-//        updateBlackList { success in
-//            if success { AppCallDirectoryProvider.shared.reloadCallDirectory() }
-//        }
-    }
 
-    func forceUpdateQuarantine() {
-        updateQuarantine { success in
-            if success { AppCallDirectoryProvider.shared.reloadCallDirectory() }
+    func forceUpdateAll() {
+        updateAll { [weak self] success in
+            if success {
+                self?.reloadCallDirectoriesIfNeeded()
+            }
         }
     }
 
-    func forceUpdateAll() {
-        updateAll { success in
-            if success { AppCallDirectoryProvider.shared.reloadCallDirectory() }
+    private func reloadCallDirectoriesIfNeeded() {
+        Task {
+            let appSystem: AppData? = try await dataStore.fetchSingle(context: dataStore.backgroundContext)
+            let currentDate = Date()
+            let lastUpdateQuarantine = appSystem?.lastUpdateQuarantine ?? currentDate
+            let limit = 60 * 60 * 24
+            let nextUpdateDate = lastUpdateQuarantine == currentDate
+            ? currentDate : lastUpdateQuarantine.addingTimeInterval(TimeInterval(limit))
+            print("Data Atual: \(currentDate): data de atualizacao: \(nextUpdateDate)")
+
+            guard currentDate >= nextUpdateDate else {
+                return
+            }
+
+            AppCallDirectoryProvider.shared.reloadCallDirectory()
         }
     }
 
@@ -137,6 +146,10 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func updateAll(completion: ((Bool) -> Void)? = nil) {
+        guard !isRefreshing else {
+            return
+        }
+        isRefreshing = true
         let operationQueue = OperationQueue()
         let dispatchGroup = DispatchGroup()
 
@@ -144,18 +157,19 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         let blockResult: (Bool) -> Void = { success in
             guard let oldResult = result else {
                 result = success
+                dispatchGroup.leave()
                 return
             }
             result = success || oldResult
             dispatchGroup.leave()
         }
 
-//        dispatchGroup.enter()
-//        operationQueue.addOperation { [weak self] in
-//            self?.updateBlackList { success in
-//                blockResult(success)
-//            }
-//        }
+        //        dispatchGroup.enter()
+        //        operationQueue.addOperation { [weak self] in
+        //            self?.updateBlackList { success in
+        //                blockResult(success)
+        //            }
+        //        }
 
         dispatchGroup.enter()
         operationQueue.addOperation { [weak self] in
@@ -164,7 +178,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
             }
         }
 
-        dispatchGroup.notify(queue: .main) {
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            self?.isRefreshing = false
             completion?(result ?? false)
         }
     }
@@ -195,32 +210,34 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func persistBlackList(list: [BlackListAndReportResponse]) -> Bool {
-//        if list.isEmpty { return false }
-//
-//        _ = list.map { [weak self] item in
-//            guard let self = self else { return }
-//            let blackListItem = ContactQuarantineData(context: self.dataStore.backgroundContext)
-//            blackListItem.id = Int64(item.id)
-//            blackListItem.date = Date()
-//            blackListItem.number = Int64(item.number) ?? .zero
-//            blackListItem.contactType = ContactType.blacklist.rawValue
-//            blackListItem.formattedNumber = blackListItem.number.toFormattedPhoneNumber()
-//        }
-//        do {
-//            try self.dataStore.save(context: dataStore.backgroundContext)
-//            print("##### BlackList saved")
-//            return true
-//        } catch {
-            return false
-//        }
+        //        if list.isEmpty { return false }
+        //
+        //        _ = list.map { [weak self] item in
+        //            guard let self = self else { return }
+        //            let blackListItem = ContactQuarantineData(context: self.dataStore.backgroundContext)
+        //            blackListItem.id = Int64(item.id)
+        //            blackListItem.date = Date()
+        //            blackListItem.number = Int64(item.number) ?? .zero
+        //            blackListItem.contactType = ContactType.blacklist.rawValue
+        //            blackListItem.formattedNumber = blackListItem.number.toFormattedPhoneNumber()
+        //        }
+        //        do {
+        //            try self.dataStore.save(context: dataStore.backgroundContext)
+        //            print("##### BlackList saved")
+        //            return true
+        //        } catch {
+        return false
+        //        }
     }
 
     private func updateQuarantine(completion: ((Bool) -> Void)? = nil) {
         Task {
             do {
-                let result: [ContactQuarantineData]? = try await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingdateSortDescriptor(),
-                                                                                 predicate: ContactQuarantineData.quarantineListPredicate(),
-                                                                                 context: dataStore.backgroundContext)
+                let result: [ContactQuarantineData]? = try await dataStore.fetch(
+                    sortDescriptors: ContactQuarantineData.ascendingdateSortDescriptor(),
+                    predicate: ContactQuarantineData.quarantineListPredicate(),
+                    context: dataStore.backgroundContext
+                )
 
                 let lastIndex = result?.last?.id ?? .zero
 
@@ -228,8 +245,12 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
                                         limit: limitOffSet) { [weak self] result in
                     switch result {
                     case .success(let list):
-                        let response = self?.persistQuarantine(list: list) ?? false
-                        completion?(response)
+                        self?.persistQuarantine(list: list, completion: { success in
+                            completion?(success)
+                        })
+
+//                        let response = self?.persistQuarantine(list: list) ?? false
+//                        completion?(response)
 
                     case .failure:
                         completion?(false)
@@ -239,25 +260,74 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
-    private func persistQuarantine(list: [BlackListAndReportResponse]) -> Bool {
-        if list.isEmpty { return false }
+    private func persistQuarantine(list: [BlackListAndReportResponse], completion: @escaping (Bool) -> Void) {
+        if list.isEmpty {
+            completion(false)
+            return
+        }
 
-        _ = list.map { [weak self] item in
-            guard let self = self else { return }
-            let quarantine = ContactQuarantineData(context: self.dataStore.backgroundContext)
+        saveList(list)
+        print("##### Quarantine saved")
+
+//        let dispatchGroup = DispatchGroup()
+//        let countThread = 2
+//        let countItems = list.count / countThread
+//        let remainingItems = list.count % countThread
+//
+//        print("Count: \(list.count)")
+//
+//        for i in stride(from: 0, to: list.count - 1, by: countItems) {
+//            let endIndex = min(i + countItems + (remainingItems > 0 && i + countItems >= list.count ? 1 : 0), list.count)
+//            let sublist = list[i..<endIndex]
+//            print("startIndex: \(i) : end: \(endIndex)")
+//            dispatchGroup.enter()
+//            DispatchQueue.global(qos: .background).async { [weak self] in
+//                self?.saveList(Array(sublist))
+//                print("##### Saved list: \(i) : \(endIndex - 1)")
+//                dispatchGroup.leave()
+//            }
+//        }
+//
+//        dispatchGroup.notify(queue: .global()) {
+//            print("##### Quarantine saved")
+//            completion(true)
+//        }
+
+//        for item in list {
+//            let quarantine = ContactQuarantineData(context: dataStore.backgroundContext)
+//            quarantine.id = Int64(item.id)
+//            quarantine.date = Date()
+//            quarantine.descrip = item.description ?? "-"
+//            quarantine.number = Int64(item.number) ?? .zero
+//            quarantine.contactType = ContactType.quarantine.rawValue
+//            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
+//        }
+//
+//        do {
+////            try self.dataStore.save(context: dataStore.backgroundContext)
+////            print("##### Quarantine saved")
+//            return true
+//        } catch {
+//            return false
+//        }
+    }
+
+    private func saveList(_ list: [BlackListAndReportResponse]) {
+        for item in list {
+            let quarantine = ContactQuarantineData(context: dataStore.backgroundContext)
             quarantine.id = Int64(item.id)
             quarantine.date = Date()
             quarantine.descrip = item.description ?? "-"
             quarantine.number = Int64(item.number) ?? .zero
             quarantine.contactType = ContactType.quarantine.rawValue
-            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
+            quarantine.formattedNumber = nil
+//            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
         }
+
         do {
             try self.dataStore.save(context: dataStore.backgroundContext)
-            print("##### Quarantine saved")
-            return true
         } catch {
-            return false
+            print(error.localizedDescription)
         }
     }
 }

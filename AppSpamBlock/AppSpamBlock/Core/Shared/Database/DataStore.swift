@@ -51,6 +51,18 @@ final class DataStore {
         return result
     }
 
+    func fetchSingle<T>(context: NSManagedObjectContext? = nil) async throws -> T where T: NSManagedObject {
+        let request = NSFetchRequest<T>(entityName: String(describing: T.self))
+        let _context = context ?? self.context
+
+//        guard let _context else {
+//            throw NSError(domain: "ContextError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Contexto não encontrado"])
+//        }
+
+        let results = try _context.fetch(request)
+        return results.first ?? T(context: _context)
+    }
+
     func save(context: NSManagedObjectContext? = nil) throws {
         let newContext: NSManagedObjectContext? = context ?? persistentContainer.viewContext
         if newContext?.hasChanges ?? false {

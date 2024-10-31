@@ -35,7 +35,11 @@ class ContactQuarantineData: NSManagedObject, ManagedDataProtocol, Identifiable,
     static func ascendingdateSortDescriptor() -> [NSSortDescriptor] {
         [NSSortDescriptor(key: "id", ascending: true)]
     }
-    
+
+    static func ascendingNumberSort() -> [NSSortDescriptor] {
+        [NSSortDescriptor(key: "number", ascending: true)]
+    }
+
     static func ascendingBlackListPredicate() -> NSPredicate {
         NSPredicate(format: "contactType == %@", "blacklist")
     }

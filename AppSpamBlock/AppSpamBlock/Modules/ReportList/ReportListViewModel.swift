@@ -110,7 +110,7 @@ final class ReportListViewModel: ReportListViewModelProtocol {
     private func parseList(_ list: [IContact]) {
         DispatchQueue.global(qos: .background).async { [weak self] in
             let parsedList: [ReportListCellItem] = list.compactMap {
-                return ReportListCellItem(title: $0.formattedNumber ?? String($0.number),
+                return ReportListCellItem(title: /*$0.formattedNumber ?? */String($0.number),
                                           subtitle: $0.descrip ?? "",
                                           isImported: $0.imported || $0.blocked)
             }

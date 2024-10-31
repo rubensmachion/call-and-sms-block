@@ -21,7 +21,7 @@ final class ReportListService: ReportListServiceProcotol {
         Task {
             do {
                 let predicate = type == .quarantine ? ContactQuarantineData.quarantineListPredicate() : ContactQuarantineData.blackListPredicate()
-                let response: [ContactQuarantineData] = try await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingdateSortDescriptor(),
+                let response: [ContactQuarantineData] = try await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingNumberSort(),
                                                                                   predicate: predicate,
                                                                                   context: dataStore.backgroundContext,
                                                                                   fetchLimit: limit,
