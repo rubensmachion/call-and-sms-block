@@ -15,9 +15,7 @@ final class AppCallDirectoryProvider {
 
     // MARK: - Init
 
-    private init() {
-        //        reloadCallDirectory()
-    }
+    private init() { }
 
     func reloadCallDirectory() {
         print(#function)

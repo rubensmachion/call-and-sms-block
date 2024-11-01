@@ -1,16 +1,13 @@
 import Foundation
 import SwiftUI
 import SpamKit
+import Combine
 
 protocol Home2ViewModelProtocol: ObservableObject {
-    func refresh()
+    func updateUI()
     func showOption(_ option: Home2Item)
     func showSettings()
     func didTapSecurityStatus()
-}
-
-enum SecurityStatus {
-    case enable, disable
 }
 
 final class Home2ViewModel: Home2ViewModelProtocol {
@@ -18,26 +15,36 @@ final class Home2ViewModel: Home2ViewModelProtocol {
     // MARK: - Properties
     private let coordinator: Home2CoordinatorProtocol
     private let service: Home2ServiceProcotol
-    private var isRefreshing = false
+    private var cancellables = Set<AnyCancellable>()
+    private let dataStore = DataStore()
+
+    private var lastUpdate: String? {
+        return "hoje, 9:49"
+    }
 
     @Published var items = Home2Item.allCases
-    @Published var securityStatus = SecurityStatus.disable
+    @Published var securityStatus = Home2StatusView.SecurityStatus.refreshing
 
     // MARK: - Init
     init(coordinator: Home2CoordinatorProtocol, service: Home2ServiceProcotol) {
         self.coordinator = coordinator
         self.service = service
 
-        refresh()
+        updateUI()
+        setupObservers()
     }
 
-    func refresh() {
-        checkCallDirectoryStatus()
-//        guard !isRefreshing else { return }
-//        isRefreshing = true
-//        service.fetch(lastIndex: 0, limit: 100) { [weak self] _ in
-//            self?.isRefreshing = false
-//        }
+    deinit {
+        cancellables.removeAll()
+    }
+
+    func updateUI() {
+        switch securityStatus {
+        case .enable, .disable:
+            checkCallDirectoryStatus()
+        default:
+            break
+        }
     }
 
     func showOption(_ option: Home2Item) {
@@ -56,7 +63,7 @@ final class Home2ViewModel: Home2ViewModelProtocol {
     }
 
     func didTapSecurityStatus() {
-        if securityStatus == .disable {
+        if case .disable = securityStatus {
             coordinator.showCallDirectoryTutorial()
         }
     }
@@ -65,12 +72,54 @@ final class Home2ViewModel: Home2ViewModelProtocol {
 
     private func checkCallDirectoryStatus() {
         AppCallDirectoryProvider.shared.checkStatus { [weak self] status in
+            guard let self = self else { return }
             switch status {
             case .enabled:
-                self?.securityStatus = .enable
+                Task {
+                    let appSystem: AppData? = try await self.dataStore.fetchSingle(context: self.dataStore.backgroundContext)
+                    DispatchQueue.main.async {
+                        self.securityStatus = .enable(detail: appSystem?.lastUpdateQuarantine?.toFormatDate())
+                    }
+                }
             default:
-                self?.securityStatus = .disable
+                self.securityStatus = .disable
             }
         }
+    }
+
+    private func setupObservers() {
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.updateUI()
+            }.store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: .didStartDatabaseRefreshing)
+            .sink { [weak self] _ in
+                self?.updateSecurityStatus(isRefreshing: true)
+            }.store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: .didStopDatabaseRefreshing)
+            .sink { [weak self] _ in
+                self?.updateSecurityStatus(isRefreshing: false)
+            }.store(in: &cancellables)
+    }
+
+    private func updateSecurityStatus(isRefreshing: Bool) {
+        guard isRefreshing else {
+            checkCallDirectoryStatus()
+            return
+        }
+
+        securityStatus = .refreshing
+    }
+}
+
+fileprivate extension Date {
+    func toFormatDate() -> String? {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+
+        return formatter.string(from: self)
     }
 }

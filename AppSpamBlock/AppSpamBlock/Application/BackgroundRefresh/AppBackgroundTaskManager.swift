@@ -5,6 +5,11 @@ protocol IAppBackgroundTaskManager {
     func forceUpdateAll()
 }
 
+extension Notification.Name {
+    static let didStartDatabaseRefreshing = Notification.Name("AppBackgroundTaskManager.didStartDatabaseRefreshing")
+    static let didStopDatabaseRefreshing = Notification.Name("AppBackgroundTaskManager.didStopDatabaseRefreshing")
+}
+
 final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     // MARK: - Properties
@@ -19,7 +24,15 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     private let service: AppBackgroundRefreshServiceProcotol
     private let dataStore = DataStore()
     private var isInForeground = false
-    private var isRefreshing = false
+    private var isRefreshing = false {
+        didSet {
+            guard isRefreshing else {
+                NotificationCenter.default.post(name: .didStopDatabaseRefreshing, object: nil)
+                return
+            }
+            NotificationCenter.default.post(name: .didStartDatabaseRefreshing, object: nil)
+        }
+    }
     private var limitOffSet: Int {
         return isInForeground ? 500 : 100
     }
@@ -249,9 +262,6 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
                             completion?(success)
                         })
 
-//                        let response = self?.persistQuarantine(list: list) ?? false
-//                        completion?(response)
-
                     case .failure:
                         completion?(false)
                     }
@@ -268,48 +278,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
         saveList(list)
         print("##### Quarantine saved")
-
-//        let dispatchGroup = DispatchGroup()
-//        let countThread = 2
-//        let countItems = list.count / countThread
-//        let remainingItems = list.count % countThread
-//
-//        print("Count: \(list.count)")
-//
-//        for i in stride(from: 0, to: list.count - 1, by: countItems) {
-//            let endIndex = min(i + countItems + (remainingItems > 0 && i + countItems >= list.count ? 1 : 0), list.count)
-//            let sublist = list[i..<endIndex]
-//            print("startIndex: \(i) : end: \(endIndex)")
-//            dispatchGroup.enter()
-//            DispatchQueue.global(qos: .background).async { [weak self] in
-//                self?.saveList(Array(sublist))
-//                print("##### Saved list: \(i) : \(endIndex - 1)")
-//                dispatchGroup.leave()
-//            }
-//        }
-//
-//        dispatchGroup.notify(queue: .global()) {
-//            print("##### Quarantine saved")
-//            completion(true)
-//        }
-
-//        for item in list {
-//            let quarantine = ContactQuarantineData(context: dataStore.backgroundContext)
-//            quarantine.id = Int64(item.id)
-//            quarantine.date = Date()
-//            quarantine.descrip = item.description ?? "-"
-//            quarantine.number = Int64(item.number) ?? .zero
-//            quarantine.contactType = ContactType.quarantine.rawValue
-//            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
-//        }
-//
-//        do {
-////            try self.dataStore.save(context: dataStore.backgroundContext)
-////            print("##### Quarantine saved")
-//            return true
-//        } catch {
-//            return false
-//        }
+        completion(true)
     }
 
     private func saveList(_ list: [BlackListAndReportResponse]) {

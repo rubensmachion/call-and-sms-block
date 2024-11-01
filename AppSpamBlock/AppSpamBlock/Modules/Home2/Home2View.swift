@@ -31,7 +31,7 @@ struct Home2View: View {
                 }
             }
             .onAppear(perform: {
-                viewModel.refresh()
+                viewModel.updateUI()
             })
     }
 
@@ -46,11 +46,12 @@ struct Home2View: View {
     @ViewBuilder
     private func buildCollectionView() -> some View {
         ScrollView {
-            VStack(spacing: 8.0) {
+            VStack(spacing: 2.0) {
                 Home2StatusView(status: viewModel.securityStatus)
                     .onTapGesture {
                         viewModel.didTapSecurityStatus()
                     }
+
                 LazyVGrid(columns: columns,
                           content: {
                     ForEach($viewModel.items) { item in
@@ -64,4 +65,13 @@ struct Home2View: View {
             }
         }
     }
+}
+
+
+#Preview {
+    let coordinator = Home2Coordinator(appCoordinator: AppCoordinator.appCoodinator())
+    let service = Home2Service()
+    let viewModel = Home2ViewModel(coordinator: coordinator, service: service)
+
+    return Home2View(viewModel: viewModel)
 }
