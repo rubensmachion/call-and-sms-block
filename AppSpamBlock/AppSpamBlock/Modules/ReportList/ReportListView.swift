@@ -67,6 +67,7 @@ struct ReportListView: View {
                                                               isImported: item.isImported.wrappedValue)
                             ReportListCell(item: cellItem)
                                 .onAppear {
+                                    
                                     viewModel.shouldLoadMoreItems(currentItem: item.wrappedValue)
                                 }
                         }

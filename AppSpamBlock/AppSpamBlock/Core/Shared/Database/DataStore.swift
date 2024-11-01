@@ -60,7 +60,16 @@ final class DataStore {
 //        }
 
         let results = try _context.fetch(request)
-        return results.first ?? T(context: _context)
+        return results.first ?? self.create(context: _context)
+    }
+
+    func create<T>(context: NSManagedObjectContext) -> T where T: NSManagedObject {
+        guard let entity = NSEntityDescription.entity(forEntityName: String(describing: T.self),
+                                                      in: context) else {
+            fatalError("Failed to find entity description")
+        }
+
+        return T(entity: entity, insertInto: context)
     }
 
     func save(context: NSManagedObjectContext? = nil) throws {

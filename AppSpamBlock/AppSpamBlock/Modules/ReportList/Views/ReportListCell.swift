@@ -19,7 +19,7 @@ struct ReportListCell: View {
         HStack {
             Image(systemName: "phone")
             VStack(alignment: .leading) {
-                Text(item.title)
+                Text(Int64(item.title)?.toFormattedPhoneNumber() ?? item.title)
                     .font(.headline)
                 if !item.subtitle.isEmpty {
                     Text(item.subtitle)

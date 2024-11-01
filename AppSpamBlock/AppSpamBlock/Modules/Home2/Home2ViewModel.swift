@@ -18,10 +18,6 @@ final class Home2ViewModel: Home2ViewModelProtocol {
     private var cancellables = Set<AnyCancellable>()
     private let dataStore = DataStore()
 
-    private var lastUpdate: String? {
-        return "hoje, 9:49"
-    }
-
     @Published var items = Home2Item.allCases
     @Published var securityStatus = Home2StatusView.SecurityStatus.refreshing
 

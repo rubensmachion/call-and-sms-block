@@ -1,4 +1,5 @@
 import UIKit
+import CoreData
 import BackgroundTasks
 
 protocol IAppBackgroundTaskManager {
@@ -177,13 +178,6 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
             dispatchGroup.leave()
         }
 
-        //        dispatchGroup.enter()
-        //        operationQueue.addOperation { [weak self] in
-        //            self?.updateBlackList { success in
-        //                blockResult(success)
-        //            }
-        //        }
-
         dispatchGroup.enter()
         operationQueue.addOperation { [weak self] in
             self?.updateQuarantine { success in
@@ -197,51 +191,6 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
-    private func updateBlackList(completion: ((Bool) -> Void)? = nil) {
-        Task {
-            do {
-                let result: [ContactQuarantineData]? = try await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingdateSortDescriptor(),
-                                                                                 predicate: ContactQuarantineData.blackListPredicate(),
-                                                                                 context: dataStore.backgroundContext)
-
-                let lastIndex = result?.last?.id ?? .zero
-
-                service.fetchBlackList(lastIndex: lastIndex,
-                                       limit: limitOffSet) { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success(let list):
-                        let response = self.persistBlackList(list: list)
-                        completion?(response)
-
-                    case .failure:
-                        completion?(false)
-                    }
-                }
-            }
-        }
-    }
-
-    private func persistBlackList(list: [BlackListAndReportResponse]) -> Bool {
-        //        if list.isEmpty { return false }
-        //
-        //        _ = list.map { [weak self] item in
-        //            guard let self = self else { return }
-        //            let blackListItem = ContactQuarantineData(context: self.dataStore.backgroundContext)
-        //            blackListItem.id = Int64(item.id)
-        //            blackListItem.date = Date()
-        //            blackListItem.number = Int64(item.number) ?? .zero
-        //            blackListItem.contactType = ContactType.blacklist.rawValue
-        //            blackListItem.formattedNumber = blackListItem.number.toFormattedPhoneNumber()
-        //        }
-        //        do {
-        //            try self.dataStore.save(context: dataStore.backgroundContext)
-        //            print("##### BlackList saved")
-        //            return true
-        //        } catch {
-        return false
-        //        }
-    }
 
     private func updateQuarantine(completion: ((Bool) -> Void)? = nil) {
         Task {
@@ -283,7 +232,10 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     private func saveList(_ list: [BlackListAndReportResponse]) {
         for item in list {
-            let quarantine = ContactQuarantineData(context: dataStore.backgroundContext)
+            let quarantine: ContactQuarantineData = dataStore.create(context: dataStore.backgroundContext)
+//            let quarantine = ContactQuarantineData.createEntity(context: dataStore.backgroundContext)
+//            let quarantine = ContactQuarantineData(entity: entity, insertInto: dataStore.backgroundContext)
+//            let quarantine = ContactQuarantineData(context: dataStore.backgroundContext)
             quarantine.id = Int64(item.id)
             quarantine.date = Date()
             quarantine.descrip = item.description ?? "-"

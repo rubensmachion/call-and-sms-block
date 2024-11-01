@@ -32,6 +32,15 @@ class ContactQuarantineData: NSManagedObject, ManagedDataProtocol, Identifiable,
         self.init(context: dataStore.context)
     }
 
+    static func createEntity(context: NSManagedObjectContext) -> ContactQuarantineData {
+        guard let entity = NSEntityDescription.entity(forEntityName: String(describing: ContactQuarantineData.self),
+                                                      in: context) else {
+            fatalError("Failed to find entity description")
+        }
+
+        return ContactQuarantineData(entity: entity, insertInto: context)
+    }
+
     static func ascendingdateSortDescriptor() -> [NSSortDescriptor] {
         [NSSortDescriptor(key: "id", ascending: true)]
     }
