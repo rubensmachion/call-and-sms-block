@@ -119,13 +119,11 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     func forceUpdateAll() {
         updateAll { [weak self] success in
-            if success {
-                self?.reloadCallDirectoriesIfNeeded()
-            }
+            self?.reloadCallDirectoriesIfNeeded(isIncrementalAPIData: success)
         }
     }
 
-    private func reloadCallDirectoriesIfNeeded() {
+    private func reloadCallDirectoriesIfNeeded(isIncrementalAPIData: Bool) {
         Task {
             let appSystem: AppData? = try await dataStore.fetchSingle(context: dataStore.backgroundContext)
             let currentDate = Date()
@@ -133,9 +131,15 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
             let limit = 60 * 60 * 24
             let nextUpdateDate = lastUpdateQuarantine == currentDate
             ? currentDate : lastUpdateQuarantine.addingTimeInterval(TimeInterval(limit))
-            print("Data Atual: \(currentDate): data de atualizacao: \(nextUpdateDate)")
+            print("Data Atual: \(currentDate): próxima atualizacao: \(nextUpdateDate)")
 
             guard currentDate >= nextUpdateDate else {
+                return
+            }
+
+            let shouldUpdateCall = await shouldUpdateCallDirectory()
+
+            if !isIncrementalAPIData && !shouldUpdateCall {
                 return
             }
 
@@ -143,11 +147,18 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
 
+    private func shouldUpdateCallDirectory() async ->  Bool {
+        let result: [ContactQuarantineData]? = try? await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingNumberSort(),
+                                                                          predicate: ContactQuarantineData.quarantineUnimportedListPredicate(),
+                                                                          context: dataStore.backgroundContext,
+                                                                          fetchLimit: 500)
+
+        return (result?.count ?? .zero) > .zero
+    }
+
     // MARK: - Private
 
     private func handleTask(_ task: BGTask) {
-        print(task)
-
         scheduleTask(identifier: task.identifier)
 
         task.expirationHandler = {
@@ -231,18 +242,20 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func saveList(_ list: [BlackListAndReportResponse]) {
+
+        //        let int64Numbers = list.compactMap { Int64($0.number) }
+        //        let result = findMissingNumbers(in: int64Numbers)
+        //        print(result)
+
         for item in list {
             let quarantine: ContactQuarantineData = dataStore.create(context: dataStore.backgroundContext)
-//            let quarantine = ContactQuarantineData.createEntity(context: dataStore.backgroundContext)
-//            let quarantine = ContactQuarantineData(entity: entity, insertInto: dataStore.backgroundContext)
-//            let quarantine = ContactQuarantineData(context: dataStore.backgroundContext)
             quarantine.id = Int64(item.id)
             quarantine.date = Date()
             quarantine.descrip = item.description ?? "-"
             quarantine.number = Int64(item.number) ?? .zero
             quarantine.contactType = ContactType.quarantine.rawValue
             quarantine.formattedNumber = nil
-//            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
+            //            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
         }
 
         do {
@@ -250,5 +263,26 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         } catch {
             print(error.localizedDescription)
         }
+    }
+
+    private func findMissingNumbers(in array: [Int64]) -> [Int64] {
+        var missingNumbers: [Int64] = []
+
+        for i in 0..<array.count - 1 {
+            let currentNumber = array[i]
+            let nextNumber = array[i + 1]
+
+            let difference = nextNumber - currentNumber
+
+            if difference <= 10 && difference > .zero {
+                for missing in (currentNumber + 1)..<nextNumber {
+                    if !array.contains(missing) {
+                        missingNumbers.append(missing)
+                    }
+                }
+            }
+        }
+
+        return missingNumbers
     }
 }
