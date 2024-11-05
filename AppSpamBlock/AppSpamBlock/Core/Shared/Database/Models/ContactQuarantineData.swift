@@ -73,19 +73,18 @@ class ContactQuarantineData: NSManagedObject, Identifiable, IContact {
 
         let sort = ContactQuarantineData.ascendingNumberSort()
         let predicate = ContactQuarantineData.quarantineUnprocessedListPredicate()
-        let fetchLimit = fetchLimit ?? 500
+        let _fetchLimit = fetchLimit ?? 1500
         let result: [IContact]? = try await fetch(dataStore: dataStore,
                                                   sortDescriptors: sort,
                                                   predicate: predicate,
                                                   context: context,
-                                                  fetchLimit: fetchLimit,
+                                                  fetchLimit: _fetchLimit,
                                                   offset: nil)
         return result
     }
 
     static func fetchLastItem(dataStore: IDataStore,
                               context: NSManagedObjectContext?) async throws -> IContact? {
-
         let sort = ContactQuarantineData.descendingdateSortDescriptor()
         let fetchLimit = 1
         let result: [IContact]? = try await fetch(dataStore: dataStore,
@@ -95,7 +94,7 @@ class ContactQuarantineData: NSManagedObject, Identifiable, IContact {
                                                   fetchLimit: fetchLimit,
                                                   offset: nil)
 
-        return result?.last
+        return result?.first
     }
 
     static func fetch(dataStore: IDataStore,

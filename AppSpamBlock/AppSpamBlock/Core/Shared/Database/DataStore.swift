@@ -4,6 +4,7 @@ enum DataStoreError: Error {
     case invalidData
     case invalidContext
     case invalidEntity
+    case initError
 }
 
 protocol IDataStore {
@@ -104,14 +105,4 @@ final class DataStore: IDataStore {
             }
         }
     }
-
-//    func printList(_ list: [NSManagedObject]) {
-//#if DEBUG
-//        print("----------------------------------------------")
-//        list.forEach { obj in
-//            print(obj.description)
-//        }
-//        print("----------------------------------------------")
-//#endif
-//    }
 }

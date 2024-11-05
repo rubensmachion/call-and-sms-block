@@ -24,6 +24,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     private let service: AppBackgroundRefreshServiceProcotol
     private let dataStore: IDataStore
+    private let _24hoursSecond = TimeInterval(60 * 60 * 240)
 
     private var isInForeground = false
     private var isRefreshing = false {
@@ -36,7 +37,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         }
     }
     private var limitOffSet: Int {
-        return isInForeground ? 500 : 100
+        return isInForeground ? 1500 : 100
     }
 
     private let notificationsName: [Notification.Name] = [
@@ -93,11 +94,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     private func scheduleTask(identifier: String) {
         let taskRequest = BGAppRefreshTaskRequest(identifier: identifier)
-#if DEBUG
-        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60)
-#else
-        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
-#endif
+        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: _24hoursSecond)
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
@@ -130,9 +127,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
             let appSystem = try await AppData.fetchData(dataStore: dataStore)
             let currentDate = Date()
             let lastUpdateQuarantine = appSystem?.lastUpdateQuarantine ?? currentDate
-            let limit = 60 * 60 * 24
             let nextUpdateDate = lastUpdateQuarantine == currentDate
-            ? currentDate : lastUpdateQuarantine.addingTimeInterval(TimeInterval(limit))
+            ? currentDate : lastUpdateQuarantine.addingTimeInterval(TimeInterval(_24hoursSecond))
             print("Data Atual: \(currentDate): próxima atualizacao: \(nextUpdateDate)")
 
             guard currentDate >= nextUpdateDate else {
@@ -207,7 +203,6 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     private func updateQuarantine(completion: ((Bool) -> Void)? = nil) {
         Task {
             do {
-
                 let result = try await ContactQuarantineData.fetchLastItem(dataStore: dataStore,
                                                                            context: dataStore.backgroundContext)
 
@@ -241,9 +236,6 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func saveList(_ list: [BlackListAndReportResponse]) {
-        let int64Numbers = list.compactMap { Int64($0.number) }
-        let result = findMissingNumbers(in: int64Numbers)
-        print(result)
         do {
             for item in list {
                 var quarantine = try ContactQuarantineData.create(dataStore: dataStore, context: dataStore.backgroundContext)
@@ -257,26 +249,5 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
         } catch {
             print(error.localizedDescription)
         }
-    }
-
-    private func findMissingNumbers(in array: [Int64]) -> [Int64] {
-        var missingNumbers: [Int64] = []
-
-        for i in 0..<array.count - 1 {
-            let currentNumber = array[i]
-            let nextNumber = array[i + 1]
-
-            let difference = nextNumber - currentNumber
-
-            if difference <= 20 && difference > .zero {
-                for missing in (currentNumber + 1)..<nextNumber {
-                    if !array.contains(missing) {
-                        missingNumbers.append(missing)
-                    }
-                }
-            }
-        }
-
-        return missingNumbers
     }
 }
