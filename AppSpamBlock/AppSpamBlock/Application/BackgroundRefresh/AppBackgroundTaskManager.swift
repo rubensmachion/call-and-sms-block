@@ -23,7 +23,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private let service: AppBackgroundRefreshServiceProcotol
-    private let dataStore = DataStore()
+    private let dataStore: IDataStore
+
     private var isInForeground = false
     private var isRefreshing = false {
         didSet {
@@ -46,7 +47,8 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     // MARK: - Init
 
-    init(service: AppBackgroundRefreshServiceProcotol) {
+    init(service: AppBackgroundRefreshServiceProcotol, dataStore: IDataStore) {
+        self.dataStore = dataStore
         self.service = service
 
         guard let taskIdentifier = taskIdentifier else {
@@ -125,7 +127,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     private func reloadCallDirectoriesIfNeeded(isIncrementalAPIData: Bool) {
         Task {
-            let appSystem: AppData? = try await dataStore.fetchSingle(context: dataStore.backgroundContext)
+            let appSystem = try await AppData.fetchData(dataStore: dataStore)
             let currentDate = Date()
             let lastUpdateQuarantine = appSystem?.lastUpdateQuarantine ?? currentDate
             let limit = 60 * 60 * 24
@@ -148,10 +150,9 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func shouldUpdateCallDirectory() async ->  Bool {
-        let result: [ContactQuarantineData]? = try? await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingNumberSort(),
-                                                                          predicate: ContactQuarantineData.quarantineUnimportedListPredicate(),
-                                                                          context: dataStore.backgroundContext,
-                                                                          fetchLimit: 500)
+        let result = try? await ContactQuarantineData.fetchPendingSyncData(dataStore: dataStore,
+                                                                           context: dataStore.backgroundContext,
+                                                                           fetchLimit: 1)
 
         return (result?.count ?? .zero) > .zero
     }
@@ -206,13 +207,11 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     private func updateQuarantine(completion: ((Bool) -> Void)? = nil) {
         Task {
             do {
-                let result: [ContactQuarantineData]? = try await dataStore.fetch(
-                    sortDescriptors: ContactQuarantineData.ascendingdateSortDescriptor(),
-                    predicate: ContactQuarantineData.quarantineListPredicate(),
-                    context: dataStore.backgroundContext
-                )
 
-                let lastIndex = result?.last?.id ?? .zero
+                let result = try await ContactQuarantineData.fetchLastItem(dataStore: dataStore,
+                                                                           context: dataStore.backgroundContext)
+
+                let lastIndex = result?.id ?? .zero
 
                 service.fetchQuarantine(lastIndex: lastIndex,
                                         limit: limitOffSet) { [weak self] result in
@@ -242,23 +241,19 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func saveList(_ list: [BlackListAndReportResponse]) {
-
         //        let int64Numbers = list.compactMap { Int64($0.number) }
         //        let result = findMissingNumbers(in: int64Numbers)
         //        print(result)
-
-        for item in list {
-            let quarantine: ContactQuarantineData = dataStore.create(context: dataStore.backgroundContext)
-            quarantine.id = Int64(item.id)
-            quarantine.date = Date()
-            quarantine.descrip = item.description ?? "-"
-            quarantine.number = Int64(item.number) ?? .zero
-            quarantine.contactType = ContactType.quarantine.rawValue
-            quarantine.formattedNumber = nil
-            //            quarantine.formattedNumber = quarantine.number.toFormattedPhoneNumber()
-        }
-
         do {
+            for item in list {
+                let quarantine = try ContactQuarantineData.create(dataStore: dataStore, context: dataStore.backgroundContext)
+//                let quarantine: ContactQuarantineData = try dataStore.create(context: dataStore.backgroundContext)
+                quarantine.id = Int64(item.id)
+                quarantine.date = Date()
+                quarantine.descrip = item.description ?? "-"
+                quarantine.number = Int64(item.number) ?? .zero
+            }
+
             try self.dataStore.save(context: dataStore.backgroundContext)
         } catch {
             print(error.localizedDescription)

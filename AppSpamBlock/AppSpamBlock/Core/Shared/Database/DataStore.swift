@@ -1,6 +1,28 @@
 import CoreData
 
-final class DataStore {
+enum DataStoreError: Error {
+    case invalidData
+    case invalidContext
+    case invalidEntity
+}
+
+protocol IDataStore {
+    var context: NSManagedObjectContext { get }
+    var backgroundContext: NSManagedObjectContext { get }
+
+    func fetch<T>(sortDescriptors: [NSSortDescriptor]?,
+                  predicate: NSPredicate?,
+                  context: NSManagedObjectContext?,
+                  fetchLimit: Int?,
+                  offset: Int?) async throws -> [T] where T: NSManagedObject
+    func fetchSingle<T>(context: NSManagedObjectContext?) async throws -> T where T: NSManagedObject
+    func create<T>(context: NSManagedObjectContext) throws -> T where T: NSManagedObject
+    func save(context: NSManagedObjectContext?) throws
+}
+
+final class DataStore: IDataStore {
+
+    // MARK: - Properties
 
     private let persistentContainer: NSPersistentContainer
 
@@ -13,6 +35,8 @@ final class DataStore {
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return context
     }()
+
+    // MARK: - Init
 
     init() {
         let modelURL = Bundle(for: type(of: self)).url(forResource: Bundle.main.persistenceContainerName,
@@ -27,7 +51,6 @@ final class DataStore {
         persistentContainer.persistentStoreDescriptions = [storeDescription]
         persistentContainer.loadPersistentStores { description, error in
             if let error = error {
-                // TODO: Handle error
                 print("Failed to load CoreData: \(error.localizedDescription)")
             }
         }
@@ -55,18 +78,17 @@ final class DataStore {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         let _context = context ?? self.context
 
-//        guard let _context else {
-//            throw NSError(domain: "ContextError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Contexto não encontrado"])
-//        }
-
         let results = try _context.fetch(request)
-        return results.first ?? self.create(context: _context)
+        guard let first = results.first else {
+            return try self.create(context: _context)
+        }
+        return first
     }
 
-    func create<T>(context: NSManagedObjectContext) -> T where T: NSManagedObject {
+    func create<T>(context: NSManagedObjectContext) throws -> T where T: NSManagedObject {
         guard let entity = NSEntityDescription.entity(forEntityName: String(describing: T.self),
                                                       in: context) else {
-            fatalError("Failed to find entity description")
+            throw DataStoreError.invalidEntity
         }
 
         return T(entity: entity, insertInto: context)
@@ -79,13 +101,13 @@ final class DataStore {
         }
     }
 
-    func printList(_ list: [NSManagedObject]) {
-#if DEBUG
-        print("----------------------------------------------")
-        list.forEach { obj in
-            print(obj.description)
-        }
-        print("----------------------------------------------")
-#endif
-    }
+//    func printList(_ list: [NSManagedObject]) {
+//#if DEBUG
+//        print("----------------------------------------------")
+//        list.forEach { obj in
+//            print(obj.description)
+//        }
+//        print("----------------------------------------------")
+//#endif
+//    }
 }

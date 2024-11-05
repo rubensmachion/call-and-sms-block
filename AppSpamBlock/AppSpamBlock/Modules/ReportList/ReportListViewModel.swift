@@ -112,7 +112,7 @@ final class ReportListViewModel: ReportListViewModelProtocol {
             let parsedList: [ReportListCellItem] = list.compactMap {
                 return ReportListCellItem(title: /*$0.formattedNumber ?? */String($0.number),
                                           subtitle: $0.descrip ?? "",
-                                          isImported: $0.imported || $0.blocked)
+                                          isImported: $0.processed)
             }
             self?.fetchOffset += list.count
             self?.originalList.append(contentsOf: list)

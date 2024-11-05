@@ -72,7 +72,8 @@ final class Home2ViewModel: Home2ViewModelProtocol {
             switch status {
             case .enabled:
                 Task {
-                    let appSystem: AppData? = try await self.dataStore.fetchSingle(context: self.dataStore.backgroundContext)
+                    let appSystem = try await AppData.fetchData(dataStore: self.dataStore,
+                                                                context: self.dataStore.backgroundContext)
                     DispatchQueue.main.async {
                         self.securityStatus = .enable(detail: appSystem?.lastUpdateQuarantine?.toFormatDate())
                     }

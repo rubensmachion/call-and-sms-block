@@ -16,21 +16,20 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
         Task {
             do {
                 let dataStore = DataStore()
-
-                let result: [ContactQuarantineData] = try await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingNumberSort(),
-                                                                                predicate: ContactQuarantineData.quarantineUnimportedListPredicate(),
-                                                                                context: dataStore.backgroundContext,
-                                                                                fetchLimit: 500)
-                guard !result.isEmpty else {
+                let fetchedData = try await ContactQuarantineData.fetchPendingSyncData(dataStore: dataStore,
+                                                                                       context: dataStore.backgroundContext,
+                                                                                       fetchLimit: nil)
+                guard let fetchedData = fetchedData, !(fetchedData.isEmpty) else {
                     return
                 }
+                let result = fetchedData
                 for index in 0..<result.count {
                     context.addIdentificationEntry(withNextSequentialPhoneNumber: result[index].number,
                                                    label: result[index].descrip ?? "-")
-                    result[index].blocked = true
+                    result[index].processed = true
                 }
 
-                let appSystem: AppData? = try await dataStore.fetchSingle(context: dataStore.backgroundContext)
+                let appSystem = try await AppData.fetchData(dataStore: dataStore, context: dataStore.backgroundContext)
                 appSystem?.lastUpdateQuarantine = Date()
                 try dataStore.save(context: dataStore.backgroundContext)
 
@@ -44,7 +43,6 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
 }
 
 extension CallDirectoryHandler: CXCallDirectoryExtensionContextDelegate {
-
     func requestFailed(for extensionContext: CXCallDirectoryExtensionContext, withError error: Error) {
         print(error.localizedDescription)
     }

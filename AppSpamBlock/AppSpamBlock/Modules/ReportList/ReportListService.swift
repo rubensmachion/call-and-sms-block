@@ -1,7 +1,7 @@
 import Foundation
 
 enum ReportLisResult {
-    case success([ContactQuarantineData])
+    case success([IContact])
     case failure(Error)
 }
 
@@ -15,17 +15,26 @@ protocol ReportListServiceProcotol {
 
 final class ReportListService: ReportListServiceProcotol {
 
-    private let dataStore = DataStore()
+    private let dataStore: IDataStore
+
+    init(dataStore: IDataStore) {
+        self.dataStore = dataStore
+    }
 
     func fetch(type: ReportFetchType, limit: Int, offset: Int, completion: @escaping (ReportLisResult) -> Void) {
         Task {
             do {
-                let predicate = type == .quarantine ? ContactQuarantineData.quarantineListPredicate() : ContactQuarantineData.blackListPredicate()
-                let response: [ContactQuarantineData] = try await dataStore.fetch(sortDescriptors: ContactQuarantineData.ascendingNumberSort(),
-                                                                                  predicate: predicate,
+                let sort = ContactQuarantineData.ascendingNumberSort()
+                let response: [IContact]? = try await ContactQuarantineData.fetch(dataStore: dataStore,
+                                                                                  sortDescriptors: sort,
+                                                                                  predicate: nil,
                                                                                   context: dataStore.backgroundContext,
                                                                                   fetchLimit: limit,
                                                                                   offset: offset)
+                guard let response = response else {
+                    completion(.failure(DataStoreError.invalidData))
+                    return
+                }
                 completion(.success(response))
             } catch {
                 completion(.failure(error))

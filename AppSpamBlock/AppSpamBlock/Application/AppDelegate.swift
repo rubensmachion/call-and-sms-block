@@ -6,7 +6,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     private lazy var blackListRefresh: IAppBackgroundTaskManager = {
         let network = NetworkRequest()
         let service = AppBackgroundRefreshService(network: network)
-        let bg = AppBackgroundTaskManager(service: service)
+        let dataStore = DataStore()
+        let bg = AppBackgroundTaskManager(service: service, dataStore: dataStore)
         return bg
     }()
 

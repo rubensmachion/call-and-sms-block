@@ -1,75 +1,125 @@
 import CoreData
 import UtilKit
 
-@objc protocol IContact {
+protocol IContact: ManagedDataProtocol {
     var id: Int64 { get set }
     var number: Int64 { get set }
     var date: Date { get set }
-    var blocked: Bool { get set }
-    var imported: Bool { get set }
+    var processed: Bool { get set }
     var descrip: String? { get set }
-    var contactType: String? { get set }
     var formattedNumber: String? { get set }
-}
 
-enum ContactType: String {
-    case blacklist
-    case quarantine
+    static func create(dataStore: IDataStore,
+                       context: NSManagedObjectContext?) throws -> IContact
+
+    static func fetchPendingSyncData(dataStore: IDataStore,
+                                     context: NSManagedObjectContext?,
+                                     fetchLimit: Int?) async throws -> [IContact]?
+
+    static func fetchLastItem(dataStore: IDataStore,
+                              context: NSManagedObjectContext?) async throws -> IContact?
+
+    static func fetch(dataStore: IDataStore,
+                      sortDescriptors: [NSSortDescriptor]?,
+                      predicate: NSPredicate?,
+                      context: NSManagedObjectContext?,
+                      fetchLimit: Int?,
+                      offset: Int?) async throws -> [IContact]?
 }
 
 @objc(ContactQuarantineData)
-class ContactQuarantineData: NSManagedObject, ManagedDataProtocol, Identifiable, IContact {
+class ContactQuarantineData: NSManagedObject, Identifiable, IContact {
     @NSManaged var id: Int64
     @NSManaged var number: Int64
     @NSManaged var date: Date
-    @NSManaged var blocked: Bool
-    @NSManaged var imported: Bool
+    @NSManaged var processed: Bool
     @NSManaged var descrip: String?
-    @NSManaged var contactType: String?
     @NSManaged var formattedNumber: String?
 
-    convenience init(dataStore: DataStore) {
-        self.init(context: dataStore.context)
+    override var description: String {
+        return "id: \(id), descrip: \(descrip ?? "-"), number: \(number), date: \(date), processed: \(processed)"
     }
 
-    static func createEntity(context: NSManagedObjectContext) -> ContactQuarantineData {
-        guard let entity = NSEntityDescription.entity(forEntityName: String(describing: ContactQuarantineData.self),
-                                                      in: context) else {
-            fatalError("Failed to find entity description")
-        }
-
-        return ContactQuarantineData(entity: entity, insertInto: context)
+    convenience init(dataStore: IDataStore) {
+        self.init(context: dataStore.context)
     }
 
     static func ascendingdateSortDescriptor() -> [NSSortDescriptor] {
         [NSSortDescriptor(key: "id", ascending: true)]
     }
 
+    static func descendingdateSortDescriptor() -> [NSSortDescriptor] {
+        [NSSortDescriptor(key: "id", ascending: false)]
+    }
+
     static func ascendingNumberSort() -> [NSSortDescriptor] {
         [NSSortDescriptor(key: "number", ascending: true)]
     }
 
-    static func ascendingBlackListPredicate() -> NSPredicate {
-        NSPredicate(format: "contactType == %@", "blacklist")
+    static func quarantineUnprocessedListPredicate() -> NSPredicate {
+        NSPredicate(format: "processed == false")
     }
 
-    static func blackListPredicate() -> NSPredicate {
-        NSPredicate(format: "contactType == %@", "blacklist")
+    static func create(dataStore: IDataStore,
+                       context: NSManagedObjectContext?) throws -> IContact {
+        let _context = context ?? dataStore.context
+        let result: ContactQuarantineData = try dataStore.create(context: _context)
+        return result
     }
 
-    static func quarantineListPredicate() -> NSPredicate {
-        NSPredicate(format: "contactType == %@", "quarantine")
+    static func fetchPendingSyncData(dataStore: IDataStore,
+                                     context: NSManagedObjectContext?,
+                                     fetchLimit: Int?) async throws -> [IContact]? {
+
+        let sort = ContactQuarantineData.ascendingNumberSort()
+        let predicate = ContactQuarantineData.quarantineUnprocessedListPredicate()
+        let fetchLimit = fetchLimit ?? 500
+        let result: [IContact]? = try await fetch(dataStore: dataStore,
+                                                  sortDescriptors: sort,
+                                                  predicate: predicate,
+                                                  context: context,
+                                                  fetchLimit: fetchLimit,
+                                                  offset: nil)
+        return result
     }
 
-    static func blackUnimportedListPredicate() -> NSPredicate {
-        NSPredicate(format: "blocked == %@", false)
+    static func fetchLastItem(dataStore: IDataStore,
+                              context: NSManagedObjectContext?) async throws -> IContact? {
+
+        let sort = ContactQuarantineData.descendingdateSortDescriptor()
+        let fetchLimit = 1
+        let result: [IContact]? = try await fetch(dataStore: dataStore,
+                                                  sortDescriptors: sort,
+                                                  predicate: nil,
+                                                  context: context,
+                                                  fetchLimit: fetchLimit,
+                                                  offset: nil)
+
+        return result?.last
     }
 
-    static func quarantineUnimportedListPredicate() -> NSPredicate {
-        NSPredicate(format: "imported == false")
-    }
+    static func fetch(dataStore: IDataStore,
+                      sortDescriptors: [NSSortDescriptor]?,
+                      predicate: NSPredicate?,
+                      context: NSManagedObjectContext?,
+                      fetchLimit: Int?,
+                      offset: Int?) async throws -> [IContact]? {
+        var result: [ContactQuarantineData]?
 
-    override var description: String {
-        return "id: \(id), descrip: \(descrip ?? "-"), number: \(number), date: \(date), blocked: \(blocked), imported: \(imported), contactType: \(contactType ?? "-")"
+        guard let context = context else {
+            result = try await dataStore.fetch(sortDescriptors: sortDescriptors,
+                                               predicate: predicate,
+                                               context: dataStore.context,
+                                               fetchLimit: fetchLimit,
+                                               offset: offset)
+            return result
+        }
+
+        result = try await dataStore.fetch(sortDescriptors: sortDescriptors,
+                                           predicate: predicate,
+                                           context: context,
+                                           fetchLimit: fetchLimit,
+                                           offset: offset)
+        return result
     }
 }
