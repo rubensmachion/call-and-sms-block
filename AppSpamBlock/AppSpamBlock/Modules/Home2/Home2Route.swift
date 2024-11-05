@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import AppNavigationKit
-import SpamKit
 
 enum Home2Route: AnyIdentifiable {
     case start
@@ -15,7 +14,8 @@ enum Home2Route: AnyIdentifiable {
         case .start:
             AnyView(Home2Builder.setup(coordinator: coordinator))
         case .spam:
-            AnyView(SpamHomeBuilder.setup(coordinator: coordinator))
+            AnyView(Text("Spam"))
+//            AnyView(SpamHomeBuilder.setup(coordinator: coordinator))
         case .settings:
             AnyView(SettingsBuilder.setup(coordinator: coordinator))
         case .callDirectoryTutorial:

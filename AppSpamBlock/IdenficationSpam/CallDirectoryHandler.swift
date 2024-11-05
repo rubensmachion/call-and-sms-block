@@ -22,7 +22,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                 guard let fetchedData = fetchedData, !(fetchedData.isEmpty) else {
                     return
                 }
-                let result = fetchedData
+                var result = fetchedData
                 for index in 0..<result.count {
                     context.addIdentificationEntry(withNextSequentialPhoneNumber: result[index].number,
                                                    label: result[index].descrip ?? "-")

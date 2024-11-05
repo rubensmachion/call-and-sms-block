@@ -241,13 +241,12 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
     }
 
     private func saveList(_ list: [BlackListAndReportResponse]) {
-        //        let int64Numbers = list.compactMap { Int64($0.number) }
-        //        let result = findMissingNumbers(in: int64Numbers)
-        //        print(result)
+        let int64Numbers = list.compactMap { Int64($0.number) }
+        let result = findMissingNumbers(in: int64Numbers)
+        print(result)
         do {
             for item in list {
-                let quarantine = try ContactQuarantineData.create(dataStore: dataStore, context: dataStore.backgroundContext)
-//                let quarantine: ContactQuarantineData = try dataStore.create(context: dataStore.backgroundContext)
+                var quarantine = try ContactQuarantineData.create(dataStore: dataStore, context: dataStore.backgroundContext)
                 quarantine.id = Int64(item.id)
                 quarantine.date = Date()
                 quarantine.descrip = item.description ?? "-"
@@ -269,7 +268,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
             let difference = nextNumber - currentNumber
 
-            if difference <= 10 && difference > .zero {
+            if difference <= 20 && difference > .zero {
                 for missing in (currentNumber + 1)..<nextNumber {
                     if !array.contains(missing) {
                         missingNumbers.append(missing)

@@ -20,6 +20,55 @@ protocol IDataStore {
     func save(context: NSManagedObjectContext?) throws
 }
 
+extension IDataStore {
+
+    func fetch<T>(sortDescriptors: [NSSortDescriptor]? = nil,
+                  predicate: NSPredicate? = nil,
+                  context: NSManagedObjectContext? = nil,
+                  fetchLimit: Int? = nil,
+                  offset: Int? = nil) async throws -> [T] where T: NSManagedObject {
+        let request = NSFetchRequest<T>(entityName: String(describing: T.self))
+        request.sortDescriptors = sortDescriptors
+        request.predicate = predicate
+        if let fetchLimit = fetchLimit {
+            request.fetchLimit = fetchLimit
+        }
+        if let offset = offset {
+            request.fetchOffset = offset
+        }
+        let result = try (context?.fetch(request) ?? self.context.fetch(request))
+        return result
+    }
+
+    func fetchSingle<T>(context: NSManagedObjectContext? = nil) async throws -> T where T: NSManagedObject {
+        let request = NSFetchRequest<T>(entityName: String(describing: T.self))
+        let _context = context ?? self.context
+
+        let results = try _context.fetch(request)
+        guard let first = results.first else {
+            return try self.create(context: _context)
+        }
+        return first
+    }
+
+    func create<T>(context: NSManagedObjectContext) throws -> T where T: NSManagedObject {
+        guard let entity = NSEntityDescription.entity(forEntityName: String(describing: T.self),
+                                                      in: context) else {
+            throw DataStoreError.invalidEntity
+        }
+
+        return T(entity: entity, insertInto: context)
+    }
+
+    func save(context: NSManagedObjectContext? = nil) throws {
+        let newContext: NSManagedObjectContext? = context ?? self.context
+        if newContext?.hasChanges ?? false {
+            try newContext?.save()
+        }
+    }
+}
+
+
 final class DataStore: IDataStore {
 
     // MARK: - Properties
@@ -53,51 +102,6 @@ final class DataStore: IDataStore {
             if let error = error {
                 print("Failed to load CoreData: \(error.localizedDescription)")
             }
-        }
-    }
-
-    func fetch<T>(sortDescriptors: [NSSortDescriptor]? = nil,
-                  predicate: NSPredicate? = nil,
-                  context: NSManagedObjectContext? = nil,
-                  fetchLimit: Int? = nil,
-                  offset: Int? = nil) async throws -> [T] where T: NSManagedObject {
-        let request = NSFetchRequest<T>(entityName: String(describing: T.self))
-        request.sortDescriptors = sortDescriptors
-        request.predicate = predicate
-        if let fetchLimit = fetchLimit {
-            request.fetchLimit = fetchLimit
-        }
-        if let offset = offset {
-            request.fetchOffset = offset
-        }
-        let result = try (context?.fetch(request) ?? persistentContainer.viewContext.fetch(request))
-        return result
-    }
-
-    func fetchSingle<T>(context: NSManagedObjectContext? = nil) async throws -> T where T: NSManagedObject {
-        let request = NSFetchRequest<T>(entityName: String(describing: T.self))
-        let _context = context ?? self.context
-
-        let results = try _context.fetch(request)
-        guard let first = results.first else {
-            return try self.create(context: _context)
-        }
-        return first
-    }
-
-    func create<T>(context: NSManagedObjectContext) throws -> T where T: NSManagedObject {
-        guard let entity = NSEntityDescription.entity(forEntityName: String(describing: T.self),
-                                                      in: context) else {
-            throw DataStoreError.invalidEntity
-        }
-
-        return T(entity: entity, insertInto: context)
-    }
-
-    func save(context: NSManagedObjectContext? = nil) throws {
-        let newContext: NSManagedObjectContext? = context ?? persistentContainer.viewContext
-        if newContext?.hasChanges ?? false {
-            try newContext?.save()
         }
     }
 

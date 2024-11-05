@@ -1,6 +1,6 @@
 import CoreData
 
-protocol IAppData: ManagedDataProtocol {
+protocol IAppData {
     var id: Int64 { get set }
     var lastUpdateQuarantine: Date? { get set }
 }

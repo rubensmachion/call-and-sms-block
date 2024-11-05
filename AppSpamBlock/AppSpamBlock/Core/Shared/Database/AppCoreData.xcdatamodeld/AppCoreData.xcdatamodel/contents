@@ -4,22 +4,6 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="lastUpdateQuarantine" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
-    <entity name="BlockNumberData" representedClassName=".BlockNumberData" syncable="YES">
-        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" attributeType="String"/>
-        <attribute name="isBlocked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="label" optional="YES" attributeType="String"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="number" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="shouldUnlock" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-    </entity>
-    <entity name="BlockNumberGroup" representedClassName=".BlockNumberGroup" syncable="YES">
-        <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" attributeType="String"/>
-        <attribute name="subtitle" attributeType="String"/>
-        <attribute name="title" attributeType="String"/>
-        <relationship name="numbers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BlockNumberData"/>
-    </entity>
     <entity name="ContactQuarantineData" representedClassName=".ContactQuarantineData" syncable="YES">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="descrip" optional="YES" attributeType="String"/>

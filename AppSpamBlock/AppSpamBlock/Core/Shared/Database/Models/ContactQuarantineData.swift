@@ -1,7 +1,7 @@
 import CoreData
 import UtilKit
 
-protocol IContact: ManagedDataProtocol {
+protocol IContact {
     var id: Int64 { get set }
     var number: Int64 { get set }
     var date: Date { get set }

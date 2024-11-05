@@ -7,7 +7,6 @@ options:
     iOS: 16.0
 
 localPackages:
-  - Packages/SpamKit
   - Packages/AppNavigationKit
   - Packages/UtilKit
   - Packages/NetworkKit
@@ -273,7 +272,6 @@ targets:
         embed: true
       - target: BlockSpam
         embed: true
-      - package: SpamKit
       - package: AppNavigationKit
       - package: UtilKit
       - package: NetworkKit
