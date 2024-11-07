@@ -24,7 +24,7 @@ final class AppBackgroundTaskManager: IAppBackgroundTaskManager {
 
     private let service: AppBackgroundRefreshServiceProcotol
     private let dataStore: IDataStore
-    private let _24hoursSecond = TimeInterval(60 * 60 * 240)
+    private let _24hoursSecond = TimeInterval(60 * 60 * 24)
 
     private var isInForeground = false
     private var isRefreshing = false {
