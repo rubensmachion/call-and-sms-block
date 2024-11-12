@@ -6,11 +6,15 @@ enum ReportLisResult {
 }
 
 enum ReportFetchType {
-    case quarantine, blacklist
+    case imported, notImported
 }
 
 protocol ReportListServiceProcotol {
-    func fetch(type: ReportFetchType, limit: Int, offset: Int, completion: @escaping (ReportLisResult) -> Void)
+    func fetch(type: ReportFetchType,
+               searchTerm: String?,
+               limit: Int,
+               offset: Int,
+               completion: @escaping (ReportLisResult) -> Void)
 }
 
 final class ReportListService: ReportListServiceProcotol {
@@ -21,13 +25,34 @@ final class ReportListService: ReportListServiceProcotol {
         self.dataStore = dataStore
     }
 
-    func fetch(type: ReportFetchType, limit: Int, offset: Int, completion: @escaping (ReportLisResult) -> Void) {
+    func fetch(type: ReportFetchType,
+               searchTerm: String?,
+               limit: Int,
+               offset: Int,
+               completion: @escaping (ReportLisResult) -> Void) {
         Task {
             do {
                 let sort = ContactQuarantineData.ascendingNumberSort()
+                var predicateFormat = ""
+                var predicateArguments: [Any] = []
+
+                if let searchTerm = searchTerm, !searchTerm.isEmpty {
+                    predicateFormat = "number BEGINSWITH %@"
+                    predicateArguments.append(searchTerm)
+                }
+
+                if type == .notImported {
+                    if !predicateFormat.isEmpty {
+                        predicateFormat.append(" AND ")
+                    }
+                    predicateFormat.append("processed == false")
+                }
+
+                let predicate = predicateFormat.isEmpty ? nil : NSPredicate(format: predicateFormat, argumentArray: predicateArguments)
+                
                 let response: [IContact]? = try await ContactQuarantineData.fetch(dataStore: dataStore,
                                                                                   sortDescriptors: sort,
-                                                                                  predicate: nil,
+                                                                                  predicate: predicate,
                                                                                   context: dataStore.backgroundContext,
                                                                                   fetchLimit: limit,
                                                                                   offset: offset)

@@ -37,7 +37,7 @@ final class ReportListViewModel: ReportListViewModelProtocol {
             case .suspect:
                 return "Suspected SPAM"
             case .blocked:
-                return "Blocked Conctacts"
+                return "Not imported"
             }
         }
     }
@@ -59,7 +59,11 @@ final class ReportListViewModel: ReportListViewModelProtocol {
             segmentedChange()
         }
     }
-    @Published var searchText: String = ""
+    @Published var searchText: String = "" {
+        didSet {
+            startSearch()
+        }
+    }
     @Published var filteredResult: [ReportListCellItem] = []
 
     var pickerOptions = PickerOptions.allCases.map { $0.localizedTitle }
@@ -79,8 +83,8 @@ final class ReportListViewModel: ReportListViewModelProtocol {
     func refresh() {
         guard !isFetching else { return  }
         isLoading = originalList.isEmpty
-        let fetchType = pickerSelection == .zero ? ReportFetchType.quarantine : ReportFetchType.blacklist
-        service.fetch(type: fetchType, limit: fetchlimit, offset: fetchOffset) { [weak self] result in
+        let fetchType = pickerSelection == .zero ? ReportFetchType.imported : ReportFetchType.notImported
+        service.fetch(type: fetchType, searchTerm: searchText, limit: fetchlimit, offset: fetchOffset) { [weak self] result in
             switch result {
             case .success(let list):
                 self?.parseList(list)
@@ -106,11 +110,15 @@ final class ReportListViewModel: ReportListViewModelProtocol {
         fetchOffset = .zero
         refresh()
     }
+    
+    private func startSearch() {
+//        refresh()
+    }
 
     private func parseList(_ list: [IContact]) {
         DispatchQueue.global(qos: .background).async { [weak self] in
             let parsedList: [ReportListCellItem] = list.compactMap {
-                return ReportListCellItem(title: /*$0.formattedNumber ?? */String($0.number),
+                return ReportListCellItem(title: String($0.number),
                                           subtitle: $0.descrip ?? "",
                                           isImported: $0.processed)
             }
